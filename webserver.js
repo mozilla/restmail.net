@@ -1,5 +1,4 @@
 var express = require('express'),
-      https = require('https'),
       redis = require("redis");
 
 // create a connection to the redis datastore
@@ -17,7 +16,14 @@ var app = express.createServer(
 // the 'todo/get' api gets the current version of the todo list
 // from the server
 app.get('/get/:user', function(req, res) {
-  res.send(req.params.user);
+  db.lrange(req.params.user, 0, -1, function(err, replies) {
+    if (err) {
+      console.log("ERROR", err);
+      res.send(500); 
+    } else {
+      res.json(replies);
+    }
+  });
 });
 
 app.use(express.static(__dirname + "/static"));
