@@ -10,11 +10,13 @@ function loggit(err) {
 
 var server = smtp.createServer(function (req) {
   req.on('to', function (to, ack) {
+    console.log("got mail for", to); 
     // accept everything
     ack.accept();
   });
 
   req.on('message', function (stream, ack) {
+    console.log("getting mail body to", req.to); 
     var data = 'from: ' + req.from + "\n" +
                'to: ' + req.to + "\n\n";
 
