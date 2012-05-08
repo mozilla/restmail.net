@@ -15,14 +15,20 @@ var app = express.createServer(
 
 // the 'todo/get' api gets the current version of the todo list
 // from the server
-app.get('/get/:user', function(req, res) {
-  db.lrange(req.params.user, 0, -1, function(err, replies) {
+app.get('/mail/:user', function(req, res) {
+  db.lrange(req.params.user, -10, -1, function(err, replies) {
     if (err) {
       console.log("ERROR", err);
       res.send(500); 
     } else {
       res.json(replies);
     }
+  });
+});
+
+app.put('/clear/:user', function(req, res) {
+  db.ltrim(user, 0, -1, function(err) {
+    res.send(err ? 500 : 200);
   });
 });
 
