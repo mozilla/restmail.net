@@ -26,7 +26,7 @@ app.get('/mail/:user', function(req, res) {
   });
 });
 
-app.put('/clear/:user', function(req, res) {
+app.delete('/mail/:user', function(req, res) {
   db.ltrim(user, 0, -1, function(err) {
     res.send(err ? 500 : 200);
   });
