@@ -1,6 +1,6 @@
 {
   "processes": [
     "webserver.js",
-    "emailserver.js",    
+    "emailserver.js"
   ]
 }
