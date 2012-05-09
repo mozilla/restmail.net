@@ -11,7 +11,7 @@ function loggit(err) {
 
 var server = smtp.createServer('restmail.net', function (req) {
   req.on('to', function (to, ack) {
-    console.log("got mail for", to); 
+    console.log("got mail for", to);
     // accept everything
     ack.accept();
   });
@@ -19,7 +19,7 @@ var server = smtp.createServer('restmail.net', function (req) {
   req.on('message', function (stream, ack) {
     console.log("getting mail body to", req.to);
 
-    var mailparser = new require("mailparser").MailParser({
+    var mailparser = new MailParser({
       streamAttachments: true,
       debug: true
     });
@@ -27,8 +27,9 @@ var server = smtp.createServer('restmail.net', function (req) {
     stream.pipe(mailparser);
 
     mailparser.on('end', function(mail) {
-      console.log(mail);
-      db.rpush(user, mail.toString(), function(err) {
+      var user = req.to.split('@')[0];
+      console.log(user, mail);
+      db.rpush(user, JSON.stringify(mail.toString()), function(err) {
         if (err) return loggit(err);
 
         db.llen(user, function(err, replies) {
@@ -39,7 +40,6 @@ var server = smtp.createServer('restmail.net', function (req) {
           });
         });
       });
-
     });
 
     ack.accept();

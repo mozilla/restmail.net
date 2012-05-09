@@ -19,9 +19,15 @@ app.get('/mail/:user', function(req, res) {
   db.lrange(req.params.user, -10, -1, function(err, replies) {
     if (err) {
       console.log("ERROR", err);
-      res.send(500); 
+      res.send(500);
     } else {
-      res.json(replies);
+      var arr = [];
+      replies.forEach(function (r) {
+        try {
+          arr.push(JSON.parse(r));
+        } catch(e) { }
+      });
+      res.json(arr);
     }
   });
 });
