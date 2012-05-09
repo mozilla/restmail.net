@@ -1,5 +1,6 @@
 var smtp = require('smtp-protocol'),
-   redis = require("redis");
+   redis = require("redis"),
+   MailParser = require("mailparser").MailParser;
 
 // create a connection to the redis datastore
 var db = redis.createClient();
@@ -16,18 +17,18 @@ var server = smtp.createServer('restmail.net', function (req) {
   });
 
   req.on('message', function (stream, ack) {
-    console.log("getting mail body to", req.to); 
-    var data = 'from: ' + req.from + "\n" +
-               'to: ' + req.to + "\n\n";
+    console.log("getting mail body to", req.to);
 
-    stream.on('data', function(chunk) {
-      data += chunk;
+    var mailparser = new require("mailparser").MailParser({
+      streamAttachments: true,
+      debug: true
     });
 
-    stream.on('end', function(chunk) {
-      var user = req.to.split('@')[0];
+    stream.pipe(mailparser);
 
-      db.rpush(user, data, function(err) {
+    mailparser.on('end', function(mail) {
+      console.log(mail);
+      db.rpush(user, mail.toString(), function(err) {
         if (err) return loggit(err);
 
         db.llen(user, function(err, replies) {
@@ -38,6 +39,7 @@ var server = smtp.createServer('restmail.net', function (req) {
           });
         });
       });
+
     });
 
     ack.accept();

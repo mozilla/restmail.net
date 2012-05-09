@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "2.5.0",
     "redis": "0.7.1",
-    "smtp-protocol": "*"
+    "smtp-protocol": "*",
+    "mailparser": "*"
   },
   "optionalDependencies": {
     "hiredis": "0.1.14"
