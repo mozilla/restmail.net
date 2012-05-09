@@ -8,7 +8,7 @@ function loggit(err) {
   console.log("ERROR (oh noes!):", err);
 }
 
-var server = smtp.createServer(function (req) {
+var server = smtp.createServer('restmail.net', function (req) {
   req.on('to', function (to, ack) {
     console.log("got mail for", to); 
     // accept everything
