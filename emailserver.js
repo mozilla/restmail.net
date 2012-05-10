@@ -10,10 +10,15 @@ function loggit(err) {
 }
 
 var server = smtp.createServer('restmail.net', function (req) {
-  req.on('to', function (to, ack) {
-    console.log("got mail for", to);
-    // accept everything
-    ack.accept();
+  ['rcpt', 'mail', 'to', 'from'].forEach(function(event)  {
+    req.on(event, function () {
+      var ack = arguments[arguments.length - 1];
+      ack.accept(250, "OK");
+    });
+  });
+
+  req.on('greeting', function (to, ack) {
+    ack.accept(250, " ");
   });
 
   req.on('message', function (stream, ack) {
