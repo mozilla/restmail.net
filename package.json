@@ -6,7 +6,7 @@
   "dependencies": {
     "express": "2.5.0",
     "redis": "0.7.1",
-    "smtp-protocol": "*",
+    "smtp-protocol": "https://github.com/downloads/lloyd/node-smtp-protocol/lloyd-node-smtp-protocol-0.2.0-2-gbc7f9ac.tar.gz",
     "mailparser": "*"
   },
   "optionalDependencies": {
