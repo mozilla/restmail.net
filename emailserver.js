@@ -47,7 +47,7 @@ var server = smtp.createServer('restmail.net', function (req) {
       });
     });
 
-    ack.accept();
+    ack.accept(354, 'OK');
   });
 });
 
