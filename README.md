@@ -47,7 +47,7 @@ fields stripped out):
           "mime-version": "1.0 (Apple Message framework v1257)",
         },
         "from": [ {
-          "address": "lloyd@hilaiel.com",
+          "address": "lloyd@example.com",
           "name": "Lloyd Hilaiel"
         } ],
         "to": [ {
@@ -62,7 +62,7 @@ fields stripped out):
           "mime-version": "1.0 (Apple Message framework v1257)",
         },
         "from": [ {
-          "address": "lloyd@hilaiel.com",
+          "address": "lloyd@example.com",
           "name": "Lloyd Hilaiel"
         } ],
         "to": [ {
