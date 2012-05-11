@@ -51,4 +51,15 @@ var server = smtp.createServer('restmail.net', function (req) {
   });
 });
 
-server.listen(9025);
+// handle starting from the command line or the test harness
+if (process.argv[1] === __filename) {
+  server.listen(process.env['PORT'] || 9025);
+} else {
+  module.exports = function(cb) {
+    console.log('u called');
+    server.listen(0, function(err) {
+      console.log('i called');
+      cb(err, server.address().port);
+    });
+  }
+}

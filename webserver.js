@@ -40,4 +40,13 @@ app.delete('/mail/:user', function(req, res) {
 
 app.use(express.static(__dirname + "/static"));
 
-app.listen(process.env['PORT'] || 8080, '0.0.0.0');
+// handle starting from the command line or the test harness
+if (process.argv[1] === __filename) {
+  app.listen(process.env['PORT'] || 8080);
+} else {
+  module.exports = function(cb) {
+    app.listen(0, function(err) {
+      cb(err, app.address().port);
+    });
+  }
+}

@@ -19,6 +19,6 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "mocha -R spec test/*.js"
+    "test": "mocha -R spec tests.js"
   }
 }
