@@ -9,9 +9,10 @@ db.on("error", function (err) {
   console.log("redis error!  the server won't actually store anything!  this is just fine for local dev");
 });
 
-var app = express.createServer(
-  express.logger()
-);
+var app = express.createServer();
+
+// log to console when not testing
+if (process.env.NODE_ENV !== 'test') app.use(express.logger());
 
 // the 'todo/get' api gets the current version of the todo list
 // from the server
@@ -33,7 +34,7 @@ app.get('/mail/:user', function(req, res) {
 });
 
 app.delete('/mail/:user', function(req, res) {
-  db.ltrim(user, 0, -1, function(err) {
+  db.del(req.params.user, function(err) {
     res.send(err ? 500 : 200);
   });
 });
