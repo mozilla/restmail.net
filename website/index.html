@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>restmail.net</title>
+  <script src="showdown.js"></script>
+</head>
+<body>
+<iframe src="/README"></iframe>
+</body>
+<script>
+  document.querySelector('iframe').addEventListener('load', function() {
+    var converter = new Showdown.converter();
+    var md = document.querySelector('iframe').contentDocument.querySelector('pre').innerHTML;
+    var d = document.createElement('div');
+    d.innerHTML = converter.makeHtml(md);
+    document.body.appendChild(d);
+  }, false);
+</script>
+</html>

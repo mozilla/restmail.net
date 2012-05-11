@@ -1,5 +1,6 @@
 var express = require('express'),
-      redis = require("redis");
+      redis = require("redis"),
+         fs = require('fs');
 
 // create a connection to the redis datastore
 var db = redis.createClient();
@@ -13,6 +14,11 @@ var app = express.createServer();
 
 // log to console when not testing
 if (process.env.NODE_ENV !== 'test') app.use(express.logger());
+
+app.get('/README', function(req, res) {
+  res.setHeader('Content-Type', 'text/plain');
+  res.sendfile(__dirname + '/README.md');
+});
 
 // the 'todo/get' api gets the current version of the todo list
 // from the server
@@ -33,13 +39,13 @@ app.get('/mail/:user', function(req, res) {
   });
 });
 
-app.delete('/mail/:user', function(req, res) {
+        app.delete('/mail/:user', function(req, res) {
   db.del(req.params.user, function(err) {
     res.send(err ? 500 : 200);
   });
 });
 
-app.use(express.static(__dirname + "/static"));
+app.use(express.static(__dirname + "/website"));
 
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
