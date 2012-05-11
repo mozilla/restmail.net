@@ -1,5 +1,6 @@
 const
 should = require('should'),
+net = require('net'),
 webserver = require('./webserver.js'),
 emailserver = require('./emailserver.js');
 
@@ -19,5 +20,25 @@ describe('the test servers', function() {
         done();
       });
     });
+  });
+});
+
+describe('sending email', function() {
+  it('should work', function(done) {
+    var s = net.connect(emailPort, function(err) {
+      should.not.exist(err);
+
+      var response = "";
+      s.on('data', function(chunk) { response += chunk; });
+
+      s.on('end', function() {
+        response.split('\r\n')[6].should.equal('221 Bye!');
+        s.destroy();
+        done();
+      });
+
+      s.end("helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\ndata\nhi\n.\nquit\n");
+    });
+    setTimeout(function() { console.log('waited'); });
   });
 });

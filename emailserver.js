@@ -22,18 +22,14 @@ var server = smtp.createServer('restmail.net', function (req) {
   });
 
   req.on('message', function (stream, ack) {
-    console.log("getting mail body to", req.to);
-
     var mailparser = new MailParser({
-      streamAttachments: true,
-      debug: true
+      streamAttachments: true
     });
 
     stream.pipe(mailparser);
 
     mailparser.on('end', function(mail) {
       var user = req.to.split('@')[0];
-      console.log(user, mail);
       db.rpush(user, JSON.stringify(mail), function(err) {
         if (err) return loggit(err);
 
@@ -56,9 +52,7 @@ if (process.argv[1] === __filename) {
   server.listen(process.env['PORT'] || 9025);
 } else {
   module.exports = function(cb) {
-    console.log('u called');
     server.listen(0, function(err) {
-      console.log('i called');
       cb(err, server.address().port);
     });
   }
