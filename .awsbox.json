@@ -2,5 +2,8 @@
   "processes": [
     "webserver.js",
     "emailserver.js"
-  ]
+  ],
+  "hooks": {
+    "postcreate": "aws_scripts/post_create.sh"
+  }
 }

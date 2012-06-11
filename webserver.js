@@ -39,7 +39,7 @@ app.get('/mail/:user', function(req, res) {
   });
 });
 
-        app.delete('/mail/:user', function(req, res) {
+app.delete('/mail/:user', function(req, res) {
   db.del(req.params.user, function(err) {
     res.send(err ? 500 : 200);
   });
