@@ -13,7 +13,7 @@
     "hiredis": "0.1.14"
   },
   "devDependencies": {
-    "awsbox": "0.2.8",
+    "awsbox": "0.2.12",
     "should": "0.6.3",
     "mocha": "1.0.3"
   },
