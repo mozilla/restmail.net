@@ -1,3 +1,4 @@
+/*global it:true describe:true */
 process.env['NODE_ENV'] = 'test';
 
 const
@@ -12,13 +13,14 @@ var webPort = -1;
 
 describe('the test servers', function() {
   it('should start up', function(done) {
+    /*jshint expr:true */
     webserver(function(err, port) {
       should.not.exist(err);
-      (port).should.be.ok
+      (port).should.be.ok;
       webPort = port;
       emailserver(function(err, port) {
         should.not.exist(err);
-        (port).should.be.ok
+        (port).should.be.ok;
         emailPort = port;
         done();
       });
