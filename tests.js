@@ -76,6 +76,7 @@ describe('web apis', function() {
         data.length.should.equal(1);
         data = data[0];
         data.text.should.equal('hi\n');
+        data.receivedAt.should.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
         data.from[0].address.should.equal('lloyd@localhost');
         data.from[0].name.should.equal('lloyd');
         data.to[0].address.should.equal('me@localhost');
