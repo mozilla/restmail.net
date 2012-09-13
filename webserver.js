@@ -55,5 +55,5 @@ if (process.argv[1] === __filename) {
     app.listen(0, function(err) {
       cb(err, app.address().port);
     });
-  }
+  };
 }
