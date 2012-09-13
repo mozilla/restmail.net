@@ -29,6 +29,7 @@ var server = smtp.createServer('restmail.net', function (req) {
     stream.pipe(mailparser);
 
     mailparser.on('end', function(mail) {
+      mail.receivedAt = new Date().toISOString();
       var user = req.to.split('@')[0];
       db.rpush(user, JSON.stringify(mail), function(err) {
         if (err) return loggit(err);
@@ -55,5 +56,5 @@ if (process.argv[1] === __filename) {
     server.listen(0, function(err) {
       cb(err, server.address().port);
     });
-  }
+  };
 }
