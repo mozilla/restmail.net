@@ -33,7 +33,7 @@ describe('clearing email', function() {
     http.request({
       host: '127.0.0.1',
       port: webPort,
-      path: '/mail/me',
+      path: '/mail/me@localhost',
       method: 'DELETE'
     }, function(res) {
       (res.statusCode).should.equal(200);
@@ -63,11 +63,11 @@ describe('sending email', function() {
 });
 
 describe('web apis', function() {
-  it('should return mail', function(done) {
+  it('should return mail via complete email address', function(done) {
     http.request({
       host: '127.0.0.1',
       port: webPort,
-      path: '/mail/me',
+      path: '/mail/me@localhost',
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
@@ -95,7 +95,7 @@ describe('clearing email', function() {
     http.request({
       host: '127.0.0.1',
       port: webPort,
-      path: '/mail/me',
+      path: '/mail/me@localhost',
       method: 'DELETE'
     }, function(res) {
       (res.statusCode).should.equal(200);

@@ -30,7 +30,7 @@ var server = smtp.createServer('restmail.net', function (req) {
 
     mailparser.on('end', function(mail) {
       mail.receivedAt = new Date().toISOString();
-      var user = req.to.split('@')[0];
+      var user = req.to;
       db.rpush(user, JSON.stringify(mail), function(err) {
         if (err) return loggit(err);
 

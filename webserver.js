@@ -2,6 +2,8 @@ var express = require('express'),
       redis = require("redis"),
          fs = require('fs');
 
+const HOSTNAME = process.env['EMAIL_HOSTNAME'] || "restmail.net";
+
 // create a connection to the redis datastore
 var db = redis.createClient();
 
@@ -20,10 +22,21 @@ app.get('/README', function(req, res) {
   res.sendfile(__dirname + '/README.md');
 });
 
+// automatically make user part only input into email with
+// default hostname.
+function canonicalize(email) {
+  if (email.indexOf('@') === -1) email = email + '@' + HOSTNAME;
+  return email;
+}
+
 // the 'todo/get' api gets the current version of the todo list
 // from the server
 app.get('/mail/:user', function(req, res) {
   if (!db) res.json([]);
+
+  console.log(req.params.user);
+  req.params.user = canonicalize(req.params.user);
+  console.log(req.params.user);
 
   db.lrange(req.params.user, -10, -1, function(err, replies) {
     if (err) {
@@ -43,6 +56,8 @@ app.get('/mail/:user', function(req, res) {
 
 app.delete('/mail/:user', function(req, res) {
   if (!db) res.send(200);
+
+  req.params.user = canonicalize(req.params.user);
 
   db.del(req.params.user, function(err) {
     res.send(err ? 500 : 200);
