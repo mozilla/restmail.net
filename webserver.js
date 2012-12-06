@@ -34,9 +34,7 @@ function canonicalize(email) {
 app.get('/mail/:user', function(req, res) {
   if (!db) res.json([]);
 
-  console.log(req.params.user);
   req.params.user = canonicalize(req.params.user);
-  console.log(req.params.user);
 
   db.lrange(req.params.user, -10, -1, function(err, replies) {
     if (err) {
