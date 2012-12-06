@@ -73,3 +73,17 @@ fields stripped out):
         "text": "it's pretty awesome too.\n"
       }
     ]
+
+## restmail on your domain
+
+You can use restmail from custom domains:  Just set restmail as your mail exchanger:
+
+    $ dig -t <my domain>
+    <my domain>            900     IN      MX      20 restmail.net.
+
+And fetch mail with the full email address:
+
+    GET /mail/<user>@<my domain>
+
+done!
+
