@@ -32,7 +32,7 @@ function canonicalize(email) {
 // the 'todo/get' api gets the current version of the todo list
 // from the server
 app.get('/mail/:user', function(req, res) {
-  if (!db) res.json([]);
+  if (!db) return res.json([]);
 
   req.params.user = canonicalize(req.params.user);
 
@@ -53,7 +53,7 @@ app.get('/mail/:user', function(req, res) {
 });
 
 app.delete('/mail/:user', function(req, res) {
-  if (!db) res.send(200);
+  if (!db) return res.send(200);
 
   req.params.user = canonicalize(req.params.user);
 
