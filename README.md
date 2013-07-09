@@ -18,6 +18,11 @@ user, and you can also delete outstanding messages via the API.
 
 This lets you test services that deliver email.
 
+By default, emails are deleted after one day.  You can change this
+by modifying the `expireAfter` parameter in `config.js`.  Set it to
+`0` for no auto-deletion, in which case you will want to keep an
+eye on your redis database size.
+
 ## security?
 
 All mail sent to restmail email addresses is completely public.  anyone
