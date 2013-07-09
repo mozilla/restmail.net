@@ -1,6 +1,7 @@
 var smtp = require('smtp-protocol'),
    redis = require("redis"),
-   MailParser = require("mailparser").MailParser;
+   MailParser = require("mailparser").MailParser,
+   config = require("./config");
 
 // create a connection to the redis datastore
 var db = redis.createClient();
@@ -33,6 +34,10 @@ var server = smtp.createServer('restmail.net', function (req) {
       var user = req.to;
       db.rpush(user, JSON.stringify(mail), function(err) {
         if (err) return loggit(err);
+
+        if (config.expireAfter) {
+          db.expire(user, config.expireAfter);
+        }
 
         db.llen(user, function(err, replies) {
           if (err) return loggit(err);
