@@ -10,7 +10,7 @@
     "mailparser": "0.2.26"
   },
   "optionalDependencies": {
-    "hiredis": "0.1.14"
+    "hiredis": "0.1.15"
   },
   "devDependencies": {
     "awsbox": "0.2.16",
