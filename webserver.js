@@ -2,20 +2,27 @@ var express = require('express'),
       redis = require("redis"),
          fs = require('fs');
 
-const HOSTNAME = process.env['EMAIL_HOSTNAME'] || "restmail.net";
+const HOSTNAME = process.env['EMAIL_HOSTNAME'] || "restmail.net",
+  IS_TEST = process.env['NODE_ENV'] == 'test';
 
 // create a connection to the redis datastore
 var db = redis.createClient();
 
 db.on("error", function (err) {
   db = null;
-  console.log("redis error!  the server won't actually store anything!  this is just fine for local dev");
+  if (IS_TEST) {
+    console.log("redis error!  the server won't actually store anything!  this is just fine for local dev")
+  } else {
+    console.log("FATAL: redis server error: " + err);
+    console.log("Exiting due to fatal error...");
+    process.exit(1);
+  }
 });
 
 var app = express.createServer();
 
 // log to console when not testing
-if (process.env.NODE_ENV !== 'test') app.use(express.logger());
+if (!IS_TEST) app.use(express.logger());
 
 app.get('/README', function(req, res) {
   res.setHeader('Content-Type', 'text/plain');
@@ -32,7 +39,7 @@ function canonicalize(email) {
 // the 'todo/get' api gets the current version of the todo list
 // from the server
 app.get('/mail/:user', function(req, res) {
-  if (!db) res.json([]);
+  if (!db) { return IS_TEST ? res.json([]) : res.send(500) }
 
   req.params.user = canonicalize(req.params.user);
 
@@ -53,7 +60,7 @@ app.get('/mail/:user', function(req, res) {
 });
 
 app.delete('/mail/:user', function(req, res) {
-  if (!db) res.send(200);
+  if (!db) { return res.send(IS_TEST ? 200 : 500) }
 
   req.params.user = canonicalize(req.params.user);
 
