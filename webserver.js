@@ -11,10 +11,10 @@ var db = redis.createClient();
 db.on("error", function (err) {
   db = null;
   if (IS_TEST) {
-    console.log("redis error!  the server won't actually store anything!  this is just fine for local dev")
+    console.log(new Date().toISOString() + ": redis error!  the server won't actually store anything!  this is just fine for local dev")
   } else {
-    console.log("FATAL: redis server error: " + err);
-    console.log("Exiting due to fatal error...");
+    console.log(new Date().toISOString() + ": FATAL: redis server error: " + err);
+    console.log(new Date().toISOString() + ": Exiting due to fatal error...");
     process.exit(1);
   }
 });
@@ -45,7 +45,7 @@ app.get('/mail/:user', function(req, res) {
 
   db.lrange(req.params.user, -10, -1, function(err, replies) {
     if (err) {
-      console.log("ERROR", err);
+      console.log(new Date().toISOString() + ": ERROR", err);
       res.send(500);
     } else {
       var arr = [];
