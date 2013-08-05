@@ -47,7 +47,8 @@ app.get('/mail/:user', function(req, res) {
           arr.push(JSON.parse(r));
         } catch(e) { }
       });
-      res.json(arr);
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify(arr, undefined, 2));
     }
   });
 });
