@@ -3,6 +3,8 @@ var smtp = require('smtp-protocol'),
    MailParser = require("mailparser").MailParser,
    config = require("./config");
 
+const HOSTNAME = process.env['EMAIL_HOSTNAME'] || "restmail.net";
+
 // create a connection to the redis datastore
 var db = redis.createClient();
 
@@ -10,7 +12,7 @@ function loggit(err) {
   console.log("ERROR (oh noes!):", err);
 }
 
-var server = smtp.createServer('restmail.net', function (req) {
+var server = smtp.createServer(HOSTNAME, function (req) {
   ['rcpt', 'mail', 'to', 'from'].forEach(function(event)  {
     req.on(event, function () {
       var ack = arguments[arguments.length - 1];
