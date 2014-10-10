@@ -1,21 +1,25 @@
 {
   "name": "restmail.net",
   "description": "A teensy tinsy temporary email service with an API and nothing else",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "express": "2.5.0",
-    "redis": "0.7.1",
-    "smtp-protocol": "0.3.0",
-    "mailparser": "0.2.26"
+    "express": "4.9.6",
+    "mailparser": "0.4.6",
+    "morgan": "1.3.2",
+    "redis": "0.12.1",
+    "smtp-protocol": "2.4.4"
   },
   "optionalDependencies": {
-    "hiredis": "0.1.14"
+    "hiredis": "0.1.17"
   },
   "devDependencies": {
-    "awsbox": "0.4.5",
-    "should": "1.1.0",
-    "mocha": "1.4.1"
+    "awsbox": "https://github.com/mozilla/awsbox/tarball/33c9de8f",
+    "should": "4.0.4",
+    "mocha": "1.21.4"
+  },
+  "engines": {
+    "node": ">= 0.10"
   },
   "scripts": {
     "start": "node webserver.js",

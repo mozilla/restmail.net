@@ -1,8 +1,12 @@
 language: node_js
 
 node_js:
- - 0.6
+ - "0.10"
+
+services:
+  - redis-server
 
 notifications:
   email:
     - lloyd@hilaiel.com
+    - jrgm@mozilla.com
