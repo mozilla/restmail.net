@@ -15,7 +15,7 @@ function log(/* format, values... */) {
   var args = Array.prototype.slice.call(arguments);
   var timestamp = new Date().toISOString();
   args[0] = util.format('[%s] %s', timestamp, args[0]);
-  process.stderr.write(util.format.apply(null, args.concat('\n')));
+  process.stderr.write(util.format.apply(null, args) + '\n');
 }
 
 function logError(err) {
