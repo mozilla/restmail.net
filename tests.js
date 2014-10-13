@@ -1,5 +1,5 @@
 /*global it:true describe:true */
-process.env['NODE_ENV'] = 'test';
+process.env.NODE_ENV = 'test';
 
 const
 should = require('should'),
@@ -25,6 +25,34 @@ describe('the test servers', function() {
         done();
       });
     });
+  });
+});
+
+describe('loading main page', function() {
+  it('should work', function(done) {
+    http.request({
+      host: '127.0.0.1',
+      port: webPort,
+      path: '/',
+      method: 'GET'
+    }, function(res) {
+      (res.statusCode).should.equal(200);
+      done();
+    }).end();
+  });
+});
+
+describe('loading main page content path /README', function() {
+  it('should work', function(done) {
+    http.request({
+      host: '127.0.0.1',
+      port: webPort,
+      path: '/README',
+      method: 'GET'
+    }, function(res) {
+      (res.statusCode).should.equal(200);
+      done();
+    }).end();
   });
 });
 

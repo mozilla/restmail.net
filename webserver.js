@@ -1,9 +1,11 @@
-var express = require('express'),
-      redis = require("redis"),
-         fs = require('fs');
+var express = require('express');
+var morgan = require('morgan');
+var redis = require('redis');
+var http = require('http');
+var path = require('path');
 
-const HOSTNAME = process.env['EMAIL_HOSTNAME'] || "restmail.net",
-  IS_TEST = process.env['NODE_ENV'] == 'test';
+const HOSTNAME = process.env.EMAIL_HOSTNAME || "restmail.net";
+const IS_TEST = process.env.NODE_ENV === 'test';
 
 // create a connection to the redis datastore
 var db = redis.createClient();
@@ -11,7 +13,8 @@ var db = redis.createClient();
 db.on("error", function (err) {
   db = null;
   if (IS_TEST) {
-    console.log(new Date().toISOString() + ": redis error!  the server won't actually store anything!  this is just fine for local dev")
+    console.log(new Date().toISOString() + ": redis error! the server " +
+                "won't actually store anything!  this is just fine for local dev");
   } else {
     console.log(new Date().toISOString() + ": FATAL: redis server error: " + err);
     console.log(new Date().toISOString() + ": Exiting due to fatal error...");
@@ -19,14 +22,14 @@ db.on("error", function (err) {
   }
 });
 
-var app = express.createServer();
+var app = express();
 
 // log to console when not testing
-if (!IS_TEST) app.use(express.logger());
+if (!IS_TEST) app.use(morgan('combined'));
 
 app.get('/README', function(req, res) {
-  res.setHeader('Content-Type', 'text/plain');
-  res.sendfile(__dirname + '/README.md');
+  res.set('Content-Type', 'text/plain');
+  res.sendFile(path.join(__dirname, 'README.md'));
 });
 
 // automatically make user part only input into email with
@@ -39,14 +42,16 @@ function canonicalize(email) {
 // the 'todo/get' api gets the current version of the todo list
 // from the server
 app.get('/mail/:user', function(req, res) {
-  if (!db) { return IS_TEST ? res.json([]) : res.send(500) }
+  if (!db) { 
+    return IS_TEST ? res.json([]) : res.status(500).end();
+  }
 
   req.params.user = canonicalize(req.params.user);
 
   db.lrange(req.params.user, -10, -1, function(err, replies) {
     if (err) {
       console.log(new Date().toISOString() + ": ERROR", err);
-      res.send(500);
+      res.status(500).end();
     } else {
       var arr = [];
       replies.forEach(function (r) {
@@ -54,19 +59,21 @@ app.get('/mail/:user', function(req, res) {
           arr.push(JSON.parse(r));
         } catch(e) { }
       });
-      res.setHeader("Content-Type", "application/json");
+      res.set("Content-Type", "application/json");
       res.send(JSON.stringify(arr, undefined, 2));
     }
   });
 });
 
 app.delete('/mail/:user', function(req, res) {
-  if (!db) { return res.send(IS_TEST ? 200 : 500) }
+  if (!db) {
+    return res.status(IS_TEST ? 200 : 500).end();
+  }
 
   req.params.user = canonicalize(req.params.user);
 
   db.del(req.params.user, function(err) {
-    res.send(err ? 500 : 200);
+    res.status(err ? 500 : 200).end();
   });
 });
 
@@ -77,8 +84,9 @@ if (process.argv[1] === __filename) {
   app.listen(process.env['PORT'] || 8080);
 } else {
   module.exports = function(cb) {
-    app.listen(0, function(err) {
-      cb(err, app.address().port);
+    var server = http.createServer(app);
+    server.listen(function() {
+      cb(null, server.address().port);
     });
   };
 }
