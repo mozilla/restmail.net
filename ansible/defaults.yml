@@ -1,0 +1,7 @@
+---
+owner: fxa
+keyname: jrgm
+region: us-west-2
+restmail_git_repo: https://github.com/mozilla/restmail.net.git
+restmail_git_version: master
+hosted_zone: lcip.org
