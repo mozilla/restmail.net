@@ -1,0 +1,37 @@
+---
+
+- name: install restmail
+  become: true
+  become_user: app
+  git: repo={{ restmail_git_repo }}
+       dest=/home/app/restmail
+       version={{ restmail_git_version }}
+       force=true
+  notify:
+    - install restmail dependencies
+    - restart restmail-web
+    - restart restmail-email
+
+- name: check if iptables nat 9025 already exists
+  become: true
+  command: iptables -L -t nat
+  failed_when: false
+  changed_when: false
+  register: nat_9025
+
+- name: route port 25 to 9025 so that an unpriviledge process can handle mail
+  become: true
+  command: iptables -t nat -A PREROUTING -p tcp -m tcp --dport 25 -j REDIRECT --to-ports 9025
+  when: nat_9025.stdout.find('tcp dpt:smtp redir ports 9025') == -1
+
+- name: supervise restmail-web server
+  become: true
+  copy: src=restmail-web.conf dest=/etc/supervisor.d/restmail-web.conf
+  notify: update supervisor
+
+- name: supervise restmail-redis server
+  become: true
+  copy: src=restmail-email.conf dest=/etc/supervisor.d/restmail-email.conf
+  notify: update supervisor
+
+- meta: flush_handlers

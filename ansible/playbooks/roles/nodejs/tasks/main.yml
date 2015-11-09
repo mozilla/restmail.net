@@ -1,0 +1,15 @@
+---
+
+- name: install nave
+  become: true
+  get_url: url=https://raw.githubusercontent.com/dannycoates/nave/master/nave.sh
+           dest=/usr/bin/nave
+           mode=755
+
+- name: install node
+  become: true
+  command: /usr/bin/nave usemain 4.8
+  # TODO detect actual changes
+  changed_when: false
+
+- meta: flush_handlers
