@@ -4,22 +4,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "express": "4.13.3",
-    "mailparser": "0.5.3",
-    "morgan": "1.6.1",
-    "redis": "2.3.0",
-    "smtp-protocol": "2.4.6"
-  },
-  "optionalDependencies": {
-    "hiredis": "0.4.1"
+    "express": "4.14.0",
+    "hiredis": "0.5.0",
+    "mailparser": "0.6.1",
+    "morgan": "1.7.0",
+    "redis": "2.6.5",
+    "smtp-protocol": "2.4.7"
   },
   "devDependencies": {
-    "awsbox": "https://github.com/mozilla/awsbox/tarball/33c9de8f",
-    "mocha": "2.3.3",
-    "should": "7.1.1"
+    "bluebird": "2.11.0",
+    "commander": "2.9.0",
+    "mocha": "3.2.0",
+    "request": "2.79.0",
+    "should": "11.1.2"
   },
   "engines": {
-    "node": ">= 0.10"
+    "node": ">= 4"
   },
   "scripts": {
     "start": "node webserver.js",

@@ -1,15 +1,15 @@
 ---
 
 - name: install restmail dependencies
-  sudo: true
-  sudo_user: app
+  become: true
+  become_user: app
   npm: path=/home/app/restmail
 
 - name: restart restmail-web
-  sudo: true
+  become: true
   supervisorctl: name=restmail-web state=restarted
 
 - name: restart restmail-email 
-  sudo: true
+  become: true
   supervisorctl: name=restmail-email state=restarted
 

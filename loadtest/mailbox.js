@@ -1,12 +1,14 @@
-var P = require('bluebird');
-var request = require('request');
-var url = require('url');
+'use strict';
 
-var log = require('./log');
+const P = require('bluebird');
+const request = require('request');
+const url = require('url');
 
-module.exports = function (port) {
-  var interval = 500;
-  var maxTries = 10;
+const log = require('./log');
+
+module.exports = function (port, options) {
+  const interval = options.interval || 500;
+  let maxTries = options.maxTries = options.maxTries || 10;
 
   function checkEmail(json, to) {
     if (!Array.isArray(json)) {
@@ -31,7 +33,7 @@ module.exports = function (port) {
   }
 
   function loop(email, tries, cb) {
-    var uri = url.format({
+    const uri = url.format({
       protocol: 'http',
       hostname: '127.0.0.1',
       port: port,
@@ -40,12 +42,17 @@ module.exports = function (port) {
 
     log('checking mail', uri);
 
-    var options = { uri: uri, json: true };
+    const requestOptions = { uri: uri, json: true };
+    request.get(requestOptions, function (err, res, json) {
+      if (err) {
+        return cb(err);
+      }
 
-    request.get(options, function (err, res, json) {
-      log('mail status', res && res.statusCode, 'tries', tries);
-
-      var emailState = checkEmail(json, email);
+      if (tries < options.maxTries - 1) {
+        log('mail status', res && res.statusCode, 'tries', tries);
+      }
+      
+      const emailState = checkEmail(json, email);
 
       if (emailState instanceof Error) {
         return cb(emailState);
@@ -59,14 +66,14 @@ module.exports = function (port) {
       }
 
       log('deleting mail', uri);
-      request.del(options, function (err /*, res, body */) {
+      request.del(requestOptions, function (err /*, res, body */) {
         cb(err, json);
       });
     });
   }
 
   function waitForEmail(email) {
-    var dfd = P.defer();
+    const dfd = P.defer();
 
     loop(email, maxTries, function (err, json) {
       if (err) {
