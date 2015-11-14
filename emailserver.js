@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var smtp = require('smtp-protocol'),
    redis = require("redis"),
    MailParser = require("mailparser").MailParser,
@@ -45,7 +47,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 
     mailparser.on('end', function(mail) {
       mail.receivedAt = new Date().toISOString();
-      var user = req.to;
+      var user = mail.to[0].address;
       log('Received message for', user);
 
       db.rpush(user, JSON.stringify(mail), function(err) {
