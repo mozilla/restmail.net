@@ -1,18 +1,20 @@
-var crypto = require('crypto');
-var P = require('bluebird');
-var smtp = require('smtp-protocol');
+'use strict';
 
-var defaultMessage = (function() {
-  var str = '';
-  var count = Math.floor(4096 / 80);
-  for (var i = 0; i < count; ++i) {
+const crypto = require('crypto');
+const P = require('bluebird');
+const smtp = require('smtp-protocol');
+
+const defaultMessage = (function() {
+  let str = '';
+  let count = Math.floor(4096 / 80);
+  for (let i = 0; i < count; ++i) {
     str += crypto.randomBytes(40).toString('hex') + '\n';
   }
   return str;
 })();
 
 module.exports = function sendmail(host, port, from, to, message) {
-  var dfd = P.defer();
+  const dfd = P.defer();
 
   message = message || defaultMessage;
 
@@ -26,7 +28,7 @@ module.exports = function sendmail(host, port, from, to, message) {
   }
 
   smtp.connect(host, port, function (mail) {
-    var msg = [
+    const msg = [
       "From: " + from,
       "To: " + to,
       "",
@@ -38,7 +40,7 @@ module.exports = function sendmail(host, port, from, to, message) {
     mail.from(from);
     mail.to(to);
     mail.data();
-    var msgstream = mail.message(onComplete.bind(null, mail));
+    const msgstream = mail.message(onComplete.bind(null, mail));
     msgstream.write(msg);
     msgstream.end();
   });

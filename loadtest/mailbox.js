@@ -6,6 +6,12 @@ const url = require('url');
 
 const log = require('./log');
 
+function debug() {
+  return;
+  const args = Array.prototype.slice.call(arguments);
+  log.apply(null, args);
+}
+
 module.exports = function (port, options) {
   const interval = options.interval || 500;
   let maxTries = options.maxTries = options.maxTries || 10;
@@ -40,7 +46,7 @@ module.exports = function (port, options) {
       pathname: '/mail/' + email
     });
 
-    log('checking mail', uri);
+    debug('checking mail', uri);
 
     const requestOptions = { uri: uri, json: true };
     request.get(requestOptions, function (err, res, json) {
@@ -65,7 +71,7 @@ module.exports = function (port, options) {
         return setTimeout(loop.bind(null, email, --tries, cb), interval);
       }
 
-      log('deleting mail', uri);
+      debug('deleting mail', uri);
       request.del(requestOptions, function (err /*, res, body */) {
         cb(err, json);
       });

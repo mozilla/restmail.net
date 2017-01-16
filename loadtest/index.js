@@ -1,12 +1,17 @@
 #!/usr/bin/env node
 'use strict';
 
+const commander = require('commander');
 const runner = require('./runner');
 
-const options = {
- mailSenders: 5,
- mailSenderInterval: 80,
- testDuration: 10000
-};
+function main() {
+  commander
+    .option('-d, --duration [duration]', 'test duration (ms)', 10000)
+    .option('-i, --interval [interval]', 'mail sender interval (ms)', 80)
+    .option('-w, --workers [workers]', 'Number of concurrent mail send tasks', 5)
+    .parse(process.argv)
 
-runner(options);
+  runner(commander.opts());
+}
+
+main();

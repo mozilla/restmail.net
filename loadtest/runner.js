@@ -2,6 +2,7 @@
 
 const path = require('path');
 const spawn = require('child_process').spawn;
+const util = require('util');
 
 const P = require('bluebird');
 
@@ -27,6 +28,12 @@ const stats = {
   startTime: new Date(),
   lastSendTime: new Date()
 };
+
+function debug() {
+  return;
+  const args = Array.prototype.slice.call(arguments);
+  log.apply(null, args);
+}
 
 function setupChild(child, name) {
   [ 'stdout', 'stderr' ].forEach(function(io) {
@@ -81,12 +88,12 @@ function sendEmail(port) {
   }
 
   function onSuccess() {
-    log(email, 'successfully sent');
+    debug(email, 'successfully sent');
     stats.emailSent += 1;
 
     waitForEmail(email).then(
       function() {
-        log(email, 'successfully retrieved');
+        debug(email, 'successfully retrieved');
         stats.emailRetrieved += 1;
       }, onError);
   }
@@ -97,7 +104,7 @@ function sendEmail(port) {
 }
 
 function startMailSenderTask(smtpPort, options) {
-  let task = setInterval(sendEmail.bind(null, smtpPort), options.mailSenderInterval);
+  let task = setInterval(sendEmail.bind(null, smtpPort), options.interval);
   mailSenderTasks.push(task);
 }
 
@@ -112,21 +119,19 @@ function stopMailSenderTasks() {
     let retrievedPerSecond = (1000 * stats.emailRetrieved / duration).toFixed(2);
     let completionTime = Date.now() - stats.lastSendTime.getTime();
 
-    let format = ("[" + new Date().toISOString() + "] " +
-                  "result: %semails (%srps) %semails (%srps), " + 
+    let format = ("result: %semails (%srps) %semails (%srps), " + 
                   "errors: %s, completionTime: %sms, " + 
                   "startTime: %s, lastSendTime: %s, now: %s\n");
-
-    console.log(format,
-                stats.emailSent,
-                sentPerSecond,
-                stats.emailRetrieved,
-                retrievedPerSecond,
-                stats.errors,
-                completionTime,
-                stats.startTime.toISOString(),
-                stats.lastSendTime.toISOString(),
-                new Date().toISOString());
+    log(util.format(format,
+                    stats.emailSent,
+                    sentPerSecond,
+                    stats.emailRetrieved,
+                    retrievedPerSecond,
+                    stats.errors,
+                    completionTime,
+                    stats.startTime.toISOString(),
+                    stats.lastSendTime.toISOString(),
+                    new Date().toISOString()));
 
     if (stats.emailSent === stats.emailRetrieved) {
       webserver.kill();
@@ -138,18 +143,18 @@ function stopMailSenderTasks() {
 
 function run(options) {
   startServers().then(function(ports) {
-    log('started with webserver on %s and emailserver on %s',
-        ports.http, ports.smtp);
+    log('started with webserver on %s and emailserver on %s [%s %s %s]',
+        ports.http, ports.smtp, options.duration, options.interval, options.workers);
 
     let mailerOptions = { maxTries: 5 };
     waitForEmail = mailbox(ports.http, mailerOptions).waitForEmail;
 
     stats.startTime = new Date();
-    for (let i = 0; i < options.mailSenders; ++i) {
+    for (let i = 0; i < options.workers; ++i) {
       startMailSenderTask(ports.smtp, options);
     }
 
-    setTimeout(stopMailSenderTasks, options.testDuration);
+    setTimeout(stopMailSenderTasks, options.duration);
   });
 }
 
