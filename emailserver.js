@@ -45,21 +45,23 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 
     mailparser.on('end', function(mail) {
       mail.receivedAt = new Date().toISOString();
-      var user = req.to;
-      log('Received message for', user);
+      var users = req.to
+      log('Received message for', users);
 
-      db.rpush(user, JSON.stringify(mail), function(err) {
-        if (err) return logError(err);
-
-        if (config.expireAfter) {
-          db.expire(user, config.expireAfter);
-        }
-
-        db.llen(user, function(err, replies) {
+      users.forEach(function(user) {
+        db.rpush(user, JSON.stringify(mail), function(err) {
           if (err) return logError(err);
 
-          if (replies > 10) db.ltrim(user, -10, -1, function(err) {
+          if (config.expireAfter) {
+            db.expire(user, config.expireAfter);
+          }
+
+          db.llen(user, function(err, replies) {
             if (err) return logError(err);
+
+            if (replies > 10) db.ltrim(user, -10, -1, function(err) {
+              if (err) return logError(err);
+            });
           });
         });
       });
