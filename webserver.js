@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var express = require('express');
 var morgan = require('morgan');
 var redis = require('redis');
@@ -81,12 +83,16 @@ app.use(express.static(__dirname + "/website"));
 
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
-  app.listen(process.env['PORT'] || 8080);
+  var port = process.env['PORT'] || 8080
+  console.log(new Date().toISOString(), 'Starting up on port', port);
+  app.listen(port);
 } else {
   module.exports = function(cb) {
     var server = http.createServer(app);
     server.listen(function() {
-      cb(null, server.address().port);
+      var port = server.address().port;
+      console.log(new Date().toISOString(), 'Starting up on port', port);
+      cb(null, port);
     });
   };
 }

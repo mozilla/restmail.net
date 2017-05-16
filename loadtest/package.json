@@ -1,0 +1,17 @@
+{
+  "name": "restmail-load-test",
+  "description": "Test direct email and GET/DELETE of mailbox messages",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "bluebird": "2.11.0",
+    "request": "2.81.0"
+  },
+  "engines": {
+    "node": ">= 4"
+  },
+  "scripts": {
+    "test": "node ./index.js"
+  }
+}

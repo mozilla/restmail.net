@@ -1,0 +1,15 @@
+---
+
+- name: install restmail dependencies
+  become: true
+  become_user: app
+  npm: path=/home/app/restmail
+
+- name: restart restmail-web
+  become: true
+  supervisorctl: name=restmail-web state=restarted
+
+- name: restart restmail-email 
+  become: true
+  supervisorctl: name=restmail-email state=restarted
+

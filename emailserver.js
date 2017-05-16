@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var smtp = require('smtp-protocol'),
    redis = require("redis"),
    MailParser = require("mailparser").MailParser,
