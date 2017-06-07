@@ -66,6 +66,18 @@ var server = smtp.createServer(HOSTNAME, function (req) {
     ack.accept(354, 'OK');
     users = []
   });
+
+  req.on('rset', function() {
+    users = []
+  })
+
+  req.on('command', function(cmd, r) {
+    if (cmd.name === 'noop') {
+      r.preventDefault()
+      r.write(250)
+      r.next()
+    }
+  })
 });
 
 // handle starting from the command line or the test harness
