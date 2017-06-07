@@ -27,16 +27,12 @@ function logError(err) {
 var server = smtp.createServer(HOSTNAME, function (req) {
   log('Handling SMTP request');
 
-  ['rcpt', 'mail', 'to', 'from'].forEach(function(event)  {
-    req.on(event, function () {
-      var ack = arguments[arguments.length - 1];
-      ack.accept(250, "OK");
-    });
-  });
+  var users = [];
 
-  req.on('greeting', function (to, ack) {
-    ack.accept(250, " ");
-  });
+  req.on('to', function(user, ack) {
+    users.push(user)
+    ack.accept(250, "OK");
+  })
 
   req.on('message', function (stream, ack) {
     var mailparser = new MailParser({
@@ -45,11 +41,9 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 
     stream.pipe(mailparser);
 
-    mailparser.on('end', function(mail) {
+    mailparser.on('end', (function(users, mail) {
       mail.receivedAt = new Date().toISOString();
-      var users = req.to
-      log('Received message for', users);
-
+      log('Received message for', users, mail);
       users.forEach(function(user) {
         db.rpush(user, JSON.stringify(mail), function(err) {
           if (err) return logError(err);
@@ -67,9 +61,10 @@ var server = smtp.createServer(HOSTNAME, function (req) {
           });
         });
       });
-    });
+    }).bind(null, users));
 
     ack.accept(354, 'OK');
+    users = []
   });
 });
 

@@ -196,6 +196,81 @@ describe('web apis', function() {
   });
 });
 
+describe('sending two mails on the same TCP connection', function() {
+  it('should work', function(done) {
+    var s = net.connect(emailPort, function(err) {
+      should.not.exist(err);
+
+      var response = "";
+      s.on('data', function(chunk) { response += chunk; });
+
+      s.on('end', function() {
+        response.split('\r\n')[10].should.equal('221 Bye!');
+        s.destroy();
+        done();
+      });
+
+      s.end("helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\nto: me <me@localhost>\n\nhello\n.\nmail from: <me@localhost>\nrcpt to: <you@localhost>\ndata\nfrom: me <me@localhost>\nto: you <you@localhost>\n\nworld\n.\nquit\n");
+    });
+    setTimeout(function() { console.log('waited'); });
+  });
+});
+
+describe('web apis', function() {
+  it('should return new mail for the address from the first delivery', function(done) {
+    http.request({
+      host: '127.0.0.1',
+      port: webPort,
+      path: '/mail/me@localhost',
+      method: 'GET'
+    }, function(res) {
+      (res.statusCode).should.equal(200);
+      var data = "";
+      res.on('data', function (chunk) { data += chunk; });
+      res.on('end', function () {
+        data = JSON.parse(data);
+        data.length.should.equal(3);
+        data = data[2];
+        data.text.should.equal('hello\n');
+        data.receivedAt.should.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+        data.from[0].address.should.equal('lloyd@localhost');
+        data.from[0].name.should.equal('lloyd');
+        data.to[0].address.should.equal('me@localhost');
+        data.to[0].name.should.equal('me');
+        Object.keys(data.headers).length.should.equal(2);
+        done();
+      });
+    }).end();
+  });
+
+  it('should return new mail for the address from the second delivery', function(done) {
+    http.request({
+      host: '127.0.0.1',
+      port: webPort,
+      path: '/mail/you@localhost',
+      method: 'GET'
+    }, function(res) {
+      (res.statusCode).should.equal(200);
+      var data = "";
+      res.on('data', function (chunk) { data += chunk; });
+      res.on('end', function () {
+        data = JSON.parse(data);
+        data.length.should.equal(2);
+        data = data[1];
+        data.text.should.equal('world\n');
+        data.receivedAt.should.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+        data.from[0].address.should.equal('me@localhost');
+        data.from[0].name.should.equal('me');
+        data.to[0].address.should.equal('you@localhost');
+        data.to[0].name.should.equal('you');
+        Object.keys(data.headers).length.should.equal(2);
+        done();
+      });
+    }).end();
+  });
+});
+
+
 describe('clearing email', function() {
   it('should work', function(done) {
     http.request({
