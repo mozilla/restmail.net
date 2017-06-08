@@ -24,6 +24,32 @@ function logError(err) {
   log("ERROR (oh noes!): " + err);
 }
 
+function mailSummary(mail) {
+  const deliveryTime =
+    new Date(mail.receivedAt).getTime() - new Date(mail.date).getTime();
+
+  const summary = {
+    subject: mail.subject,
+    from: mail.from,
+    to: mail.to,
+    date: mail.date,
+    receivedAt: mail.receivedAt,
+    deliveryTime: deliveryTime
+  };
+
+  if (mail.headers) {
+    summary.headers = {
+      subject: mail.headers.subject,
+      from: mail.headers.from,
+      to: mail.headers.to,
+      cc: mail.headers.cc,
+      date: mail.headers.date
+    };
+  }
+
+  return JSON.stringify(summary);
+}
+
 var server = smtp.createServer(HOSTNAME, function (req) {
   log('Handling SMTP request');
 
@@ -43,7 +69,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 
     mailparser.on('end', (function(users, mail) {
       mail.receivedAt = new Date().toISOString();
-      log('Received message for', users, mail);
+      log('Received message for', users, mailSummary(mail));
       users.forEach(function(user) {
         db.rpush(user, JSON.stringify(mail), function(err) {
           if (err) return logError(err);
