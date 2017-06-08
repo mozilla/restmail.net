@@ -24,19 +24,41 @@ function logError(err) {
   log("ERROR (oh noes!): " + err);
 }
 
+function mailSummary(mail) {
+  const deliveryTime =
+    new Date(mail.receivedAt).getTime() - new Date(mail.date).getTime();
+
+  const summary = {
+    subject: mail.subject,
+    from: mail.from,
+    to: mail.to,
+    date: mail.date,
+    receivedAt: mail.receivedAt,
+    deliveryTime: deliveryTime
+  };
+
+  if (mail.headers) {
+    summary.headers = {
+      subject: mail.headers.subject,
+      from: mail.headers.from,
+      to: mail.headers.to,
+      cc: mail.headers.cc,
+      date: mail.headers.date
+    };
+  }
+
+  return JSON.stringify(summary);
+}
+
 var server = smtp.createServer(HOSTNAME, function (req) {
   log('Handling SMTP request');
 
-  ['rcpt', 'mail', 'to', 'from'].forEach(function(event)  {
-    req.on(event, function () {
-      var ack = arguments[arguments.length - 1];
-      ack.accept(250, "OK");
-    });
-  });
+  var users = [];
 
-  req.on('greeting', function (to, ack) {
-    ack.accept(250, " ");
-  });
+  req.on('to', function(user, ack) {
+    users.push(user)
+    ack.accept(250, "OK");
+  })
 
   req.on('message', function (stream, ack) {
     var mailparser = new MailParser({
@@ -45,11 +67,9 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 
     stream.pipe(mailparser);
 
-    mailparser.on('end', function(mail) {
+    mailparser.on('end', (function(users, mail) {
       mail.receivedAt = new Date().toISOString();
-      var users = req.to
-      log('Received message for', users);
-
+      log('Received message for', users, mailSummary(mail));
       users.forEach(function(user) {
         db.rpush(user, JSON.stringify(mail), function(err) {
           if (err) return logError(err);
@@ -67,10 +87,23 @@ var server = smtp.createServer(HOSTNAME, function (req) {
           });
         });
       });
-    });
+    }).bind(null, users));
 
     ack.accept(354, 'OK');
+    users = []
   });
+
+  req.on('rset', function() {
+    users = []
+  })
+
+  req.on('command', function(cmd, r) {
+    if (cmd.name === 'noop') {
+      r.preventDefault()
+      r.write(250)
+      r.next()
+    }
+  })
 });
 
 // handle starting from the command line or the test harness
