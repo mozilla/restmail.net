@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-var express = require('express');
-var morgan = require('morgan');
-var redis = require('redis');
-var http = require('http');
-var path = require('path');
+const express = require('express');
+const morgan = require('morgan');
+const redis = require('redis');
+const http = require('http');
+const path = require('path');
+const isSpecialUser = require('./util').isSpecialUser;
 
 const HOSTNAME = process.env.EMAIL_HOSTNAME || "restmail.net";
 const IS_TEST = process.env.NODE_ENV === 'test';
@@ -49,6 +50,12 @@ app.get('/mail/:user', function(req, res) {
   }
 
   req.params.user = canonicalize(req.params.user);
+
+  // Don't return mailboxes for special admin-type addresses
+  const specialUser = isSpecialUser(user);
+  if (specialUser) {
+    return res.json([]);
+  }
 
   db.lrange(req.params.user, -10, -1, function(err, replies) {
     if (err) {
