@@ -1,13 +1,17 @@
 #!/usr/bin/env node
 
-var smtp = require('smtp-protocol'),
-   redis = require("redis"),
-   MailParser = require("mailparser").MailParser,
-   config = require("./config"),
-   util = require('util');
+const MailParser = require('mailparser').MailParser;
+const config = require('./config');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const redis = require('redis');
+const smtp = require('smtp-protocol');
+const util = require('util');
 
 const HOSTNAME = process.env.EMAIL_HOSTNAME || "restmail.net";
 const IS_TEST = process.env.NODE_ENV === 'test';
+const TMP_DIR = process.env.TMP_DIR || os.tmpdir();
 
 // create a connection to the redis datastore
 var db = redis.createClient();
@@ -50,6 +54,23 @@ function mailSummary(mail) {
   return JSON.stringify(summary);
 }
 
+// Treat some common default admin-type contact emails specially
+function specialAcmUser(user) {
+  var localPart = null
+  const names = [ 'administrator', 'hostmaster', 'postmaster', 'webmaster', 'admin' ]
+
+  if (! user) {
+    return;
+  }
+
+  const match = user.match(/^([^@]*)/)
+  if (match[1] && names.indexOf(match[1]) !== -1) { 
+    localPart = match[1]
+  }
+  
+  return localPart
+}
+
 var server = smtp.createServer(HOSTNAME, function (req) {
   log('Handling SMTP request');
 
@@ -71,6 +92,14 @@ var server = smtp.createServer(HOSTNAME, function (req) {
       mail.receivedAt = new Date().toISOString();
       log('Received message for', users, mailSummary(mail));
       users.forEach(function(user) {
+        // Divert special admin-type addresses into local files
+        const specialUser = specialAcmUser(user);
+        if (specialUser) {
+          const mailfile = path.join(TMP_DIR, 'restmail-' + specialUser);
+          fs.appendFileSync(mailfile, JSON.stringify(mail) + '\n');
+          return;
+        }
+
         db.rpush(user, JSON.stringify(mail), function(err) {
           if (err) return logError(err);
 

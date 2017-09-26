@@ -1,5 +1,6 @@
 /*global it:true describe:true */
 process.env.NODE_ENV = 'test';
+const TMP_DIR = process.env.TMP_DIR || require('os').tmpdir();
 
 const
 should = require('should'),
@@ -266,6 +267,204 @@ describe('web apis', function() {
     }).end();
   });
 });
+
+/*
+ * START: redirect some well-known admin addresses out of redis
+ */
+describe('sending email to some well-known admin addresses', function() {
+  it('should appear to work', function(done) {
+    var s = net.connect(emailPort, function(err) {
+      should.not.exist(err);
+
+      var response = "";
+      s.on('data', function(chunk) { response += chunk; });
+
+      s.on('end', function() {
+        response.split('\r\n')[6].should.equal('221 Bye!');
+        s.destroy();
+        done();
+      });
+
+      s.end([ 'helo',
+              'mail from: <lloyd@localhost>',
+              'rcpt to: <hostmaster@localhost>',
+              'data',
+              'from: lloyd <lloyd@localhost>',
+              'to: me <hostmaster@localhost>',
+              '',
+              'hi',
+              '.',
+              'quit',
+              '' ].join('\n') + '\n');
+    });
+  });
+});
+
+describe('web apis', function() {
+  it('should not though return mail via complete email address', function(done) {
+    http.request({
+      host: '127.0.0.1',
+      port: webPort,
+      path: '/mail/hostmaster@localhost',
+      method: 'GET'
+    }, function(res) {
+      (res.statusCode).should.equal(200);
+      var data = "";
+      res.on('data', function (chunk) { data += chunk; });
+      res.on('end', function () {
+        data = JSON.parse(data);
+        data.length.should.equal(0);
+        done();
+      });
+    }).end();
+  });
+});
+
+describe('sending to multiple "admin" recipients', function() {
+  it('should appear to work', function(done) {
+    var s = net.connect(emailPort, function(err) {
+      should.not.exist(err);
+
+      var response = "";
+      s.on('data', function(chunk) { response += chunk; });
+
+      s.on('end', function() {
+        response.split('\r\n')[7].should.equal('221 Bye!');
+        s.destroy();
+        done();
+      });
+
+      s.end([ 'helo',
+              'mail from: <lloyd@localhost>',
+              'rcpt to: <administrator@localhost>',
+              'rcpt to: <webmaster@localhost>',
+              'data',
+              'from: lloyd <lloyd@localhost>',
+              'to: Administrator <administrator@localhost>',
+              'cc: Webmaster <webmaster@localhost>',
+              '',
+              'hi',
+              '.',
+              'quit',
+              '' ].join('\n') + '\n');
+    });
+  });
+});
+
+describe('web apis', function() {
+  it('should not return "admin" mail for the to: address', function(done) {
+    http.request({
+      host: '127.0.0.1',
+      port: webPort,
+      path: '/mail/administrator@localhost',
+      method: 'GET'
+    }, function(res) {
+      (res.statusCode).should.equal(200);
+      var data = "";
+      res.on('data', function (chunk) { data += chunk; });
+      res.on('end', function () {
+        data = JSON.parse(data);
+        data.length.should.equal(0);
+        done();
+      });
+    }).end();
+  });
+
+  it('should not return "admin" mail for the cc: address', function(done) {
+    http.request({
+      host: '127.0.0.1',
+      port: webPort,
+      path: '/mail/webmaster@localhost',
+      method: 'GET'
+    }, function(res) {
+      (res.statusCode).should.equal(200);
+      var data = "";
+      res.on('data', function (chunk) { data += chunk; });
+      res.on('end', function () {
+        data = JSON.parse(data);
+        data.length.should.equal(0);
+        done();
+      });
+    }).end();
+  });
+});
+
+describe('sending two "admin" mails on the same TCP connection', function() {
+  it('should work', function(done) {
+    var s = net.connect(emailPort, function(err) {
+      should.not.exist(err);
+
+      var response = "";
+      s.on('data', function(chunk) { response += chunk; });
+
+      s.on('end', function() {
+        response.split('\r\n')[10].should.equal('221 Bye!');
+        s.destroy();
+        done();
+      });
+
+      s.end([ 'helo',
+              'mail from: <lloyd@localhost>',
+              'rcpt to: <admin@localhost>',
+              'data',
+              'from: lloyd <lloyd@localhost>',
+              'to: admin <admin@localhost>',
+              '',
+              'hello',
+              '.',
+              'mail from: <admin@localhost>',
+              'rcpt to: <postmaster@localhost>',
+              'data',
+              'from: admin <admin@localhost>',
+              'to: postmaster <postmaster@localhost>',
+              '',
+              'world',
+              '.',
+              'quit' ].join('\n') + '\n')
+    });
+  });
+});
+
+describe('web apis', function() {
+  it('should not return new "admin" mail for the address from the first delivery', function(done) {
+    http.request({
+      host: '127.0.0.1',
+      port: webPort,
+      path: '/mail/admin@localhost',
+      method: 'GET'
+    }, function(res) {
+      (res.statusCode).should.equal(200);
+      var data = "";
+      res.on('data', function (chunk) { data += chunk; });
+      res.on('end', function () {
+        data = JSON.parse(data);
+        data.length.should.equal(0);
+        done();
+      });
+    }).end();
+  });
+
+  it('should not return new "admin" mail for the address from the second delivery', function(done) {
+    http.request({
+      host: '127.0.0.1',
+      port: webPort,
+      path: '/mail/postmaster@localhost',
+      method: 'GET'
+    }, function(res) {
+      (res.statusCode).should.equal(200);
+      var data = "";
+      res.on('data', function (chunk) { data += chunk; });
+      res.on('end', function () {
+        data = JSON.parse(data);
+        data.length.should.equal(0);
+        done();
+      });
+    }).end();
+  });
+});
+/*
+ * END: redirect some well-known admin addresses out of redis
+ */
 
 describe('the SMTP RSET and NOOP commands', function() {
   it('should be supported', function(done) {
