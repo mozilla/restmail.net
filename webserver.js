@@ -52,7 +52,7 @@ app.get('/mail/:user', function(req, res) {
   req.params.user = canonicalize(req.params.user);
 
   // Don't return mailboxes for special admin-type addresses
-  const specialUser = isSpecialUser(user);
+  const specialUser = isSpecialUser(req.params.user);
   if (specialUser) {
     return res.json([]);
   }
