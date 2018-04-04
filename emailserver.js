@@ -60,6 +60,12 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 
   var users = [];
 
+  // By default smtp-protocol sends a string advertising STARTTLS support (HELO vs EHLO)
+  // Override this because we don't
+  req.on('greeting', function(command, ack) {
+    ack.accept(250, "OK");
+  });
+
   req.on('to', function(user, ack) {
     users.push(user)
     ack.accept(250, "OK");
