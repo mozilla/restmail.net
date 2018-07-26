@@ -5,8 +5,8 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "bluebird": "2.11.0",
-    "request": "2.81.0"
+    "bluebird": "3.5.1",
+    "request": "2.87.0"
   },
   "engines": {
     "node": ">= 4"

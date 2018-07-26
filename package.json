@@ -4,21 +4,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "express": "4.15.2",
+    "bluebird": "3.5.1",
+    "express": "4.16.3",
     "mailparser": "0.6.2",
-    "morgan": "1.8.1",
-    "redis": "2.7.1",
+    "morgan": "1.9.0",
+    "redis": "2.8.0",
     "smtp-protocol": "2.4.7"
   },
   "optionalDependencies": {
     "hiredis": "0.5.0"
   },
   "devDependencies": {
-    "bluebird": "2.11.0",
-    "commander": "2.9.0",
-    "mocha": "3.4.1",
-    "request": "2.81.0",
-    "should": "11.2.1"
+    "commander": "2.16.0",
+    "mocha": "3.5.3",
+    "request": "2.87.0",
+    "should": "13.2.2"
   },
   "engines": {
     "node": ">= 4"
