@@ -12,7 +12,7 @@ function isSpecialUser(user) {
     localPart = match[1];
   }
 
-  return localPart
+  return localPart;
 }
 
 module.exports = {

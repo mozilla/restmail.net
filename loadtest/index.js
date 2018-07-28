@@ -9,7 +9,7 @@ function main() {
     .option('-d, --duration [duration]', 'test duration (ms)', 10000)
     .option('-i, --interval [interval]', 'mail sender interval (ms)', 80)
     .option('-w, --workers [workers]', 'Number of concurrent mail send tasks', 5)
-    .parse(process.argv)
+    .parse(process.argv);
 
   runner(commander.opts());
 }

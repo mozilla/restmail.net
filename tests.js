@@ -420,7 +420,7 @@ describe('sending two "admin" mails on the same TCP connection', function() {
               '',
               'world',
               '.',
-              'quit' ].join('\n') + '\n')
+              'quit' ].join('\n') + '\n');
     });
   });
 });
@@ -475,7 +475,7 @@ describe('the SMTP RSET and NOOP commands', function() {
       s.on('data', function(chunk) { response += chunk; });
 
       s.on('end', function() {
-        var lines = response.split('\r\n')
+        var lines = response.split('\r\n');
         lines[3].should.equal('250 OK');
         lines[4].should.equal('250');
         lines[11].should.equal('221 Bye!');

@@ -90,7 +90,7 @@ app.use(express.static(__dirname + "/website"));
 
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
-  var port = process.env['PORT'] || 8080
+  var port = process.env['PORT'] || 8080;
   console.log(new Date().toISOString(), 'Starting up on port', port);
   app.listen(port);
 } else {
