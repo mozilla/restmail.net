@@ -123,18 +123,19 @@ function stopMailSenderTasks() {
     const completionTime = Date.now() - stats.lastSendTime.getTime();
 
     const format = ('result: %semails (%srps) %semails (%srps), ' +
-                  'errors: %s, completionTime: %sms, ' +
-                  'startTime: %s, lastSendTime: %s, now: %s\n');
-    log(util.format(format,
-                    stats.emailSent,
-                    sentPerSecond,
-                    stats.emailRetrieved,
-                    retrievedPerSecond,
-                    stats.errors,
-                    completionTime,
-                    stats.startTime.toISOString(),
-                    stats.lastSendTime.toISOString(),
-                    new Date().toISOString()));
+                    'errors: %s, completionTime: %sms, ' +
+                    'startTime: %s, lastSendTime: %s, now: %s\n');
+    const message = util.format(format,
+                                stats.emailSent,
+                                sentPerSecond,
+                                stats.emailRetrieved,
+                                retrievedPerSecond,
+                                stats.errors,
+                                completionTime,
+                                stats.startTime.toISOString(),
+                                stats.lastSendTime.toISOString(),
+                                new Date().toISOString());
+    log(message);
 
     if (stats.emailSent === stats.emailRetrieved) {
       webserver.kill();

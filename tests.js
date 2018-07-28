@@ -2,12 +2,11 @@
 process.env.NODE_ENV = 'test';
 const TMP_DIR = process.env.TMP_DIR || require('os').tmpdir();
 
-const
-should = require('should'),
-http = require('http'),
-net = require('net'),
-webserver = require('./webserver.js'),
-emailserver = require('./emailserver.js');
+const should = require('should');
+const http = require('http');
+const net = require('net');
+const webserver = require('./webserver.js');
+const emailserver = require('./emailserver.js');
 
 var emailPort = -1;
 var webPort = -1;
@@ -285,17 +284,19 @@ describe('sending email to some well-known admin addresses', function() {
         done();
       });
 
-      s.end([ 'helo',
-              'mail from: <lloyd@localhost>',
-              'rcpt to: <hostmaster@localhost>',
-              'data',
-              'from: lloyd <lloyd@localhost>',
-              'to: me <hostmaster@localhost>',
-              '',
-              'hi',
-              '.',
-              'quit',
-              '' ].join('\n') + '\n');
+      s.end([
+        'helo',
+        'mail from: <lloyd@localhost>',
+        'rcpt to: <hostmaster@localhost>',
+        'data',
+        'from: lloyd <lloyd@localhost>',
+        'to: me <hostmaster@localhost>',
+        '',
+        'hi',
+        '.',
+        'quit',
+        ''
+      ].join('\n') + '\n');
     });
   });
 });
@@ -334,19 +335,21 @@ describe('sending to multiple "admin" recipients', function() {
         done();
       });
 
-      s.end([ 'helo',
-              'mail from: <lloyd@localhost>',
-              'rcpt to: <administrator@localhost>',
-              'rcpt to: <webmaster@localhost>',
-              'data',
-              'from: lloyd <lloyd@localhost>',
-              'to: Administrator <administrator@localhost>',
-              'cc: Webmaster <webmaster@localhost>',
-              '',
-              'hi',
-              '.',
-              'quit',
-              '' ].join('\n') + '\n');
+      s.end([
+        'helo',
+        'mail from: <lloyd@localhost>',
+        'rcpt to: <administrator@localhost>',
+        'rcpt to: <webmaster@localhost>',
+        'data',
+        'from: lloyd <lloyd@localhost>',
+        'to: Administrator <administrator@localhost>',
+        'cc: Webmaster <webmaster@localhost>',
+        '',
+        'hi',
+        '.',
+        'quit',
+        ''
+      ].join('\n') + '\n');
     });
   });
 });
@@ -403,24 +406,26 @@ describe('sending two "admin" mails on the same TCP connection', function() {
         done();
       });
 
-      s.end([ 'helo',
-              'mail from: <lloyd@localhost>',
-              'rcpt to: <admin@localhost>',
-              'data',
-              'from: lloyd <lloyd@localhost>',
-              'to: admin <admin@localhost>',
-              '',
-              'hello',
-              '.',
-              'mail from: <admin@localhost>',
-              'rcpt to: <postmaster@localhost>',
-              'data',
-              'from: admin <admin@localhost>',
-              'to: postmaster <postmaster@localhost>',
-              '',
-              'world',
-              '.',
-              'quit' ].join('\n') + '\n');
+      s.end([
+        'helo',
+        'mail from: <lloyd@localhost>',
+        'rcpt to: <admin@localhost>',
+        'data',
+        'from: lloyd <lloyd@localhost>',
+        'to: admin <admin@localhost>',
+        '',
+        'hello',
+        '.',
+        'mail from: <admin@localhost>',
+        'rcpt to: <postmaster@localhost>',
+        'data',
+        'from: admin <admin@localhost>',
+        'to: postmaster <postmaster@localhost>',
+        '',
+        'world',
+        '.',
+        'quit'
+      ].join('\n') + '\n');
     });
   });
 });
