@@ -29,11 +29,11 @@ module.exports = function sendmail(host, port, from, to, message) {
 
   smtp.connect(host, port, function (mail) {
     const msg = [
-      "From: " + from,
-      "To: " + to,
-      "",
+      'From: ' + from,
+      'To: ' + to,
+      '',
       message,
-      "."
+      '.'
     ].join('\n');
 
     mail.helo('example.com');

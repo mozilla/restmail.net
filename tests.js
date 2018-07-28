@@ -76,7 +76,7 @@ describe('sending email', function() {
     var s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = "";
+      var response = '';
       s.on('data', function(chunk) { response += chunk; });
 
       s.on('end', function() {
@@ -85,7 +85,7 @@ describe('sending email', function() {
         done();
       });
 
-      s.end("helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\nto: me <me@localhost>\n\nhi\n.\nquit\n");
+      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\nto: me <me@localhost>\n\nhi\n.\nquit\n');
     });
   });
 });
@@ -99,7 +99,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -123,7 +123,7 @@ describe('sending to multiple recipients', function() {
     var s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = "";
+      var response = '';
       s.on('data', function(chunk) { response += chunk; });
 
       s.on('end', function() {
@@ -132,7 +132,7 @@ describe('sending to multiple recipients', function() {
         done();
       });
 
-      s.end("helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\nrcpt to: <you@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\nto: me <me@localhost>\ncc: you <you@localhost>\n\nhi\n.\nquit\n");
+      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\nrcpt to: <you@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\nto: me <me@localhost>\ncc: you <you@localhost>\n\nhi\n.\nquit\n');
     });
   });
 });
@@ -146,7 +146,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -174,7 +174,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -200,7 +200,7 @@ describe('sending two mails on the same TCP connection', function() {
     var s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = "";
+      var response = '';
       s.on('data', function(chunk) { response += chunk; });
 
       s.on('end', function() {
@@ -209,7 +209,7 @@ describe('sending two mails on the same TCP connection', function() {
         done();
       });
 
-      s.end("helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\nto: me <me@localhost>\n\nhello\n.\nmail from: <me@localhost>\nrcpt to: <you@localhost>\ndata\nfrom: me <me@localhost>\nto: you <you@localhost>\n\nworld\n.\nquit\n");
+      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\nto: me <me@localhost>\n\nhello\n.\nmail from: <me@localhost>\nrcpt to: <you@localhost>\ndata\nfrom: me <me@localhost>\nto: you <you@localhost>\n\nworld\n.\nquit\n');
     });
   });
 });
@@ -223,7 +223,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -249,7 +249,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -276,7 +276,7 @@ describe('sending email to some well-known admin addresses', function() {
     var s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = "";
+      var response = '';
       s.on('data', function(chunk) { response += chunk; });
 
       s.on('end', function() {
@@ -309,7 +309,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -325,7 +325,7 @@ describe('sending to multiple "admin" recipients', function() {
     var s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = "";
+      var response = '';
       s.on('data', function(chunk) { response += chunk; });
 
       s.on('end', function() {
@@ -360,7 +360,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -378,7 +378,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -394,7 +394,7 @@ describe('sending two "admin" mails on the same TCP connection', function() {
     var s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = "";
+      var response = '';
       s.on('data', function(chunk) { response += chunk; });
 
       s.on('end', function() {
@@ -434,7 +434,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -452,7 +452,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -471,7 +471,7 @@ describe('the SMTP RSET and NOOP commands', function() {
     var s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = "";
+      var response = '';
       s.on('data', function(chunk) { response += chunk; });
 
       s.on('end', function() {
@@ -483,7 +483,7 @@ describe('the SMTP RSET and NOOP commands', function() {
         done();
       });
 
-      s.end("helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\nrset\nmail from: <me@localhost>\nnoop\nrcpt to: <you@localhost>\ndata\nfrom: me <me@localhost>\nto: you <you@localhost>\n\njust4you\n.\nnoop\nquit\n");
+      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\nrset\nmail from: <me@localhost>\nnoop\nrcpt to: <you@localhost>\ndata\nfrom: me <me@localhost>\nto: you <you@localhost>\n\njust4you\n.\nnoop\nquit\n');
     });
   });
 });
@@ -497,7 +497,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -515,7 +515,7 @@ describe('web apis', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);
@@ -563,7 +563,7 @@ describe('clearing email', function() {
       method: 'GET'
     }, function(res) {
       (res.statusCode).should.equal(200);
-      var data = "";
+      var data = '';
       res.on('data', function (chunk) { data += chunk; });
       res.on('end', function () {
         data = JSON.parse(data);

@@ -10,7 +10,7 @@ const smtp = require('smtp-protocol');
 const util = require('util');
 const isSpecialUser = require('./util').isSpecialUser;
 
-const HOSTNAME = process.env.EMAIL_HOSTNAME || "restmail.net";
+const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
 const IS_TEST = process.env.NODE_ENV === 'test';
 const TMP_DIR = process.env.TMP_DIR || os.tmpdir();
 
@@ -26,7 +26,7 @@ function log(/* format, values... */) {
 }
 
 function logError(err) {
-  log("ERROR (oh noes!): " + err);
+  log('ERROR (oh noes!): ' + err);
 }
 
 function mailSummary(mail) {
@@ -63,12 +63,12 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   // By default smtp-protocol sends a string advertising STARTTLS support (HELO vs EHLO)
   // Override this because we don't
   req.on('greeting', function(command, ack) {
-    ack.accept(250, "OK");
+    ack.accept(250, 'OK');
   });
 
   req.on('to', function(user, ack) {
     users.push(user);
-    ack.accept(250, "OK");
+    ack.accept(250, 'OK');
   });
 
   req.on('message', function (stream, ack) {
