@@ -30,7 +30,10 @@ const stats = {
 };
 
 function debug() {
-  return;
+  if (! process.env.DEBUG) {
+    return;
+  }
+
   const args = Array.prototype.slice.call(arguments);
   log.apply(null, args);
 }
