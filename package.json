@@ -24,7 +24,9 @@
     "node": ">= 4"
   },
   "scripts": {
+    "lint": "eslint *.js loadtest/*.js",
+    "loadtest": "node loadtest/index.js",
     "start": "node webserver.js",
-    "test": "mocha --globals msg -R spec tests.js"
+    "test": "mocha --globals msg -R spec tests.js && npm run loadtest"
   }
 }
