@@ -28,7 +28,7 @@ db.on('error', function (err) {
 var app = express();
 
 // log to console when not testing
-if (!IS_TEST) app.use(morgan('combined'));
+if (! IS_TEST) app.use(morgan('combined'));
 
 app.get('/README', function(req, res) {
   res.set('Content-Type', 'text/plain');
@@ -45,7 +45,7 @@ function canonicalize(email) {
 // the 'todo/get' api gets the current version of the todo list
 // from the server
 app.get('/mail/:user', function(req, res) {
-  if (!db) {
+  if (! db) {
     return IS_TEST ? res.json([]) : res.status(500).end();
   }
 
@@ -75,7 +75,7 @@ app.get('/mail/:user', function(req, res) {
 });
 
 app.delete('/mail/:user', function(req, res) {
-  if (!db) {
+  if (! db) {
     return res.status(IS_TEST ? 200 : 500).end();
   }
 

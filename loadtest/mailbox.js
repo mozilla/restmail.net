@@ -17,7 +17,7 @@ module.exports = function (port, options) {
   const maxTries = options.maxTries = options.maxTries || 10;
 
   function checkEmail(json, to) {
-    if (!Array.isArray(json)) {
+    if (! Array.isArray(json)) {
       return new Error('Mailbox is not an Array');
     }
 
@@ -64,7 +64,7 @@ module.exports = function (port, options) {
         return cb(emailState);
       }
 
-      if(!emailState) {
+      if(! emailState) {
         if (tries === 0) {
           return cb(new Error('could not get mail for ' + uri));
         }
