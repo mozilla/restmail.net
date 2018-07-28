@@ -67,9 +67,9 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   });
 
   req.on('to', function(user, ack) {
-    users.push(user)
+    users.push(user);
     ack.accept(250, "OK");
-  })
+  });
 
   req.on('message', function (stream, ack) {
     var mailparser = new MailParser({
@@ -109,20 +109,20 @@ var server = smtp.createServer(HOSTNAME, function (req) {
     }).bind(null, users));
 
     ack.accept(354, 'OK');
-    users = []
+    users = [];
   });
 
   req.on('rset', function() {
-    users = []
-  })
+    users = [];
+  });
 
   req.on('command', function(cmd, r) {
     if (cmd.name === 'noop') {
-      r.preventDefault()
-      r.write(250)
-      r.next()
+      r.preventDefault();
+      r.write(250);
+      r.next();
     }
-  })
+  });
 });
 
 // handle starting from the command line or the test harness
