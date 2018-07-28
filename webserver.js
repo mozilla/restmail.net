@@ -66,7 +66,7 @@ app.get('/mail/:user', function(req, res) {
       replies.forEach(function (r) {
         try {
           arr.push(JSON.parse(r));
-        } catch(e) { }
+        } catch (e) { }
       });
       res.set('Content-Type', 'application/json');
       res.send(JSON.stringify(arr, undefined, 2));
