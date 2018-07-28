@@ -45,7 +45,7 @@ function canonicalize(email) {
 // the 'todo/get' api gets the current version of the todo list
 // from the server
 app.get('/mail/:user', function(req, res) {
-  if (!db) { 
+  if (!db) {
     return IS_TEST ? res.json([]) : res.status(500).end();
   }
 

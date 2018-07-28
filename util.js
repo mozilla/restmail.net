@@ -8,10 +8,10 @@ function isSpecialUser(user) {
   }
 
   const match = user.match(/^([^@]*)/);
-  if (match[1] && names.indexOf(match[1]) !== -1) { 
+  if (match[1] && names.indexOf(match[1]) !== -1) {
     localPart = match[1];
   }
-  
+
   return localPart
 }
 

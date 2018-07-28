@@ -119,8 +119,8 @@ function stopMailSenderTasks() {
     let retrievedPerSecond = (1000 * stats.emailRetrieved / duration).toFixed(2);
     let completionTime = Date.now() - stats.lastSendTime.getTime();
 
-    let format = ("result: %semails (%srps) %semails (%srps), " + 
-                  "errors: %s, completionTime: %sms, " + 
+    let format = ("result: %semails (%srps) %semails (%srps), " +
+                  "errors: %s, completionTime: %sms, " +
                   "startTime: %s, lastSendTime: %s, now: %s\n");
     log(util.format(format,
                     stats.emailSent,
