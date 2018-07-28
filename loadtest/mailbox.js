@@ -7,7 +7,10 @@ const url = require('url');
 const log = require('./log');
 
 function debug() {
-  return;
+  if (! process.env.DEBUG) {
+    return;
+  }
+
   const args = Array.prototype.slice.call(arguments);
   log.apply(null, args);
 }
@@ -64,7 +67,7 @@ module.exports = function (port, options) {
         return cb(emailState);
       }
 
-      if(! emailState) {
+      if (! emailState) {
         if (tries === 0) {
           return cb(new Error('could not get mail for ' + uri));
         }
