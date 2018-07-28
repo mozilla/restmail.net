@@ -57,7 +57,7 @@ module.exports = function (port, options) {
       if (tries < options.maxTries - 1) {
         log('mail status', res && res.statusCode, 'tries', tries);
       }
-      
+
       const emailState = checkEmail(json, email);
 
       if (emailState instanceof Error) {
