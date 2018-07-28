@@ -7,20 +7,20 @@ const http = require('http');
 const path = require('path');
 const isSpecialUser = require('./util').isSpecialUser;
 
-const HOSTNAME = process.env.EMAIL_HOSTNAME || "restmail.net";
+const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
 const IS_TEST = process.env.NODE_ENV === 'test';
 
 // create a connection to the redis datastore
 var db = redis.createClient();
 
-db.on("error", function (err) {
+db.on('error', function (err) {
   db = null;
   if (IS_TEST) {
-    console.log(new Date().toISOString() + ": redis error! the server " +
+    console.log(new Date().toISOString() + ': redis error! the server ' +
                 "won't actually store anything!  this is just fine for local dev");
   } else {
-    console.log(new Date().toISOString() + ": FATAL: redis server error: " + err);
-    console.log(new Date().toISOString() + ": Exiting due to fatal error...");
+    console.log(new Date().toISOString() + ': FATAL: redis server error: ' + err);
+    console.log(new Date().toISOString() + ': Exiting due to fatal error...');
     process.exit(1);
   }
 });
@@ -59,7 +59,7 @@ app.get('/mail/:user', function(req, res) {
 
   db.lrange(req.params.user, -10, -1, function(err, replies) {
     if (err) {
-      console.log(new Date().toISOString() + ": ERROR", err);
+      console.log(new Date().toISOString() + ': ERROR', err);
       res.status(500).end();
     } else {
       var arr = [];
@@ -68,7 +68,7 @@ app.get('/mail/:user', function(req, res) {
           arr.push(JSON.parse(r));
         } catch(e) { }
       });
-      res.set("Content-Type", "application/json");
+      res.set('Content-Type', 'application/json');
       res.send(JSON.stringify(arr, undefined, 2));
     }
   });
@@ -86,7 +86,7 @@ app.delete('/mail/:user', function(req, res) {
   });
 });
 
-app.use(express.static(__dirname + "/website"));
+app.use(express.static(__dirname + '/website'));
 
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
