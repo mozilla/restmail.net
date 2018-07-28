@@ -40,7 +40,7 @@ function setupChild(child, name) {
     child[io].on('data', function(buf) {
       if (process.env.LOG_TO_CONSOLE) {
         buf.toString().split('\n').forEach(function(ln) {
-          let line = ln.trim();
+          const line = ln.trim();
           if (line.length) {
             console.log(line);
           }
@@ -52,7 +52,7 @@ function setupChild(child, name) {
 }
 
 function startServers() {
-  let dfd = P.defer();
+  const dfd = P.defer();
 
   webserver = spawn('node', [ path.join(__dirname, '..', 'webserver.js') ]);
   setupChild(webserver, 'webserver');
@@ -60,7 +60,7 @@ function startServers() {
   emailserver = spawn('node', [ path.join(__dirname, '..', 'emailserver.js') ]);
   setupChild(emailserver, 'emailserver');
 
-  let waitForStartup = setInterval(function() {
+  const waitForStartup = setInterval(function() {
     if (ready.webserver && ready.emailserver) {
       clearInterval(waitForStartup);
       return dfd.resolve({
@@ -74,13 +74,13 @@ function startServers() {
 }
 
 function randomEmailAddress(domain) {
-  let user = (Math.random() * 1e16).toFixed(0);
+  const user = (Math.random() * 1e16).toFixed(0);
   return user + '@' + (domain || 'example.com');
 }
 
 function sendEmail(port) {
-  let email = randomEmailAddress();
-  let from = randomEmailAddress();
+  const email = randomEmailAddress();
+  const from = randomEmailAddress();
 
   function onError(err) {
     stats.errors += 1;
@@ -104,7 +104,7 @@ function sendEmail(port) {
 }
 
 function startMailSenderTask(smtpPort, options) {
-  let task = setInterval(sendEmail.bind(null, smtpPort), options.interval);
+  const task = setInterval(sendEmail.bind(null, smtpPort), options.interval);
   mailSenderTasks.push(task);
 }
 
@@ -114,12 +114,12 @@ function stopMailSenderTasks() {
   });
 
   setInterval(function() {
-    let duration = Date.now() - stats.startTime.getTime();
-    let sentPerSecond = (1000 * stats.emailSent / duration).toFixed(2);
-    let retrievedPerSecond = (1000 * stats.emailRetrieved / duration).toFixed(2);
-    let completionTime = Date.now() - stats.lastSendTime.getTime();
+    const duration = Date.now() - stats.startTime.getTime();
+    const sentPerSecond = (1000 * stats.emailSent / duration).toFixed(2);
+    const retrievedPerSecond = (1000 * stats.emailRetrieved / duration).toFixed(2);
+    const completionTime = Date.now() - stats.lastSendTime.getTime();
 
-    let format = ("result: %semails (%srps) %semails (%srps), " +
+    const format = ("result: %semails (%srps) %semails (%srps), " +
                   "errors: %s, completionTime: %sms, " +
                   "startTime: %s, lastSendTime: %s, now: %s\n");
     log(util.format(format,
@@ -146,7 +146,7 @@ function run(options) {
     log('started with webserver on %s and emailserver on %s [%s %s %s]',
         ports.http, ports.smtp, options.duration, options.interval, options.workers);
 
-    let mailerOptions = { maxTries: 5 };
+    const mailerOptions = { maxTries: 5 };
     waitForEmail = mailbox(ports.http, mailerOptions).waitForEmail;
 
     stats.startTime = new Date();

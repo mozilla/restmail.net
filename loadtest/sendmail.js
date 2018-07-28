@@ -5,8 +5,8 @@ const P = require('bluebird');
 const smtp = require('smtp-protocol');
 
 const defaultMessage = (function() {
+  const count = Math.floor(4096 / 80);
   let str = '';
-  let count = Math.floor(4096 / 80);
   for (let i = 0; i < count; ++i) {
     str += crypto.randomBytes(40).toString('hex') + '\n';
   }

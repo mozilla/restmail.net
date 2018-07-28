@@ -14,7 +14,7 @@ function debug() {
 
 module.exports = function (port, options) {
   const interval = options.interval || 500;
-  let maxTries = options.maxTries = options.maxTries || 10;
+  const maxTries = options.maxTries = options.maxTries || 10;
 
   function checkEmail(json, to) {
     if (!Array.isArray(json)) {
