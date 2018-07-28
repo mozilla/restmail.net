@@ -10,5 +10,4 @@ services:
 
 notifications:
   email:
-    - lloyd@hilaiel.com
     - jrgm@mozilla.com

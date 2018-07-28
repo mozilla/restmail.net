@@ -24,7 +24,8 @@
     "node": ">= 4"
   },
   "scripts": {
+    "loadtest": "cd loadtest && npm install && npm test",
     "start": "node webserver.js",
-    "test": "mocha --globals msg -R spec tests.js"
+    "test": "mocha --globals msg -R spec tests.js && npm run loadtest"
   }
 }
