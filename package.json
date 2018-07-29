@@ -19,17 +19,17 @@
     "eslint": "5.2.0",
     "eslint-plugin-fxa": "git://github.com/mozilla/eslint-plugin-fxa.git#41504c9dd30e8b52900c15b524946aa0428aef95",
     "eslint-plugin-sorting": "git://github.com/shane-tomlinson/eslint-plugin-sorting.git#bcacb99d",
-    "mocha": "3.5.3",
+    "mocha": "5.2.0",
     "request": "2.87.0",
     "should": "13.2.2"
   },
   "engines": {
-    "node": ">= 4"
+    "node": ">= 8"
   },
   "scripts": {
     "lint": "eslint *.js loadtest/*.js",
     "loadtest": "node loadtest/index.js",
     "start": "node webserver.js",
-    "test": "mocha --globals msg -R spec tests.js && npm run loadtest"
+    "test": "mocha --exit --globals msg -R spec tests.js && npm run loadtest"
   }
 }
