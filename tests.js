@@ -1,6 +1,5 @@
 /*global it:true describe:true */
 process.env.NODE_ENV = 'test';
-const TMP_DIR = process.env.TMP_DIR || require('os').tmpdir();
 
 const should = require('should');
 const http = require('http');
