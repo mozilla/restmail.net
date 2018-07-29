@@ -1,4 +1,3 @@
-/*global it:true describe:true */
 process.env.NODE_ENV = 'test';
 
 const should = require('should');
@@ -12,7 +11,6 @@ var webPort = -1;
 
 describe('the test servers', function() {
   it('should start up', function(done) {
-    /*jshint expr:true */
     webserver(function(err, port) {
       should.not.exist(err);
       (port).should.be.ok;
