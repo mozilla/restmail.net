@@ -9,6 +9,15 @@ const emailserver = require('./emailserver.js');
 var emailPort = -1;
 var webPort = -1;
 
+function requestOptions(method, path) {
+  return {
+    host: '127.0.0.1',
+    method: method,
+    path: path,
+    port: webPort
+  };
+}
+
 describe('the test servers', function() {
   it('should start up', function(done) {
     webserver(function(err, port) {
@@ -27,12 +36,7 @@ describe('the test servers', function() {
 
 describe('loading main page', function() {
   it('should work', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/'), (res) => {
       (res.statusCode).should.equal(200);
       done();
     }).end();
@@ -41,12 +45,7 @@ describe('loading main page', function() {
 
 describe('loading main page content path /README', function() {
   it('should work', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/README',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/README'), (res) => {
       (res.statusCode).should.equal(200);
       done();
     }).end();
@@ -55,12 +54,7 @@ describe('loading main page content path /README', function() {
 
 describe('clearing email', function() {
   it('should work', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'DELETE',
-      path: '/mail/me@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('DELETE', '/mail/me@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       done();
     }).end();
@@ -88,12 +82,7 @@ describe('sending email', function() {
 
 describe('web apis', function() {
   it('should return mail via complete email address', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/me@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/me@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -136,12 +125,7 @@ describe('sending to multiple recipients', function() {
 
 describe('web apis', function() {
   it('should return mail for the to: address', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/me@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/me@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -164,12 +148,7 @@ describe('web apis', function() {
   });
 
   it('should return mail for the cc: address', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/you@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/you@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -215,12 +194,7 @@ describe('sending two mails on the same TCP connection', function() {
 
 describe('web apis', function() {
   it('should return new mail for the address from the first delivery', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/me@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/me@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -241,12 +215,7 @@ describe('web apis', function() {
   });
 
   it('should return new mail for the address from the second delivery', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/you@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/you@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -303,12 +272,7 @@ describe('sending email to some well-known admin addresses', function() {
 
 describe('web apis', function() {
   it('should not though return mail via complete email address', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/hostmaster@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/hostmaster@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -356,12 +320,7 @@ describe('sending to multiple "admin" recipients', function() {
 
 describe('web apis', function() {
   it('should not return "admin" mail for the to: address', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/administrator@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/administrator@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -374,12 +333,7 @@ describe('web apis', function() {
   });
 
   it('should not return "admin" mail for the cc: address', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/webmaster@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/webmaster@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -432,12 +386,7 @@ describe('sending two "admin" mails on the same TCP connection', function() {
 
 describe('web apis', function() {
   it('should not return new "admin" mail for the address from the first delivery', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/admin@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/admin@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -450,12 +399,7 @@ describe('web apis', function() {
   });
 
   it('should not return new "admin" mail for the address from the second delivery', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/postmaster@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/postmaster@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -496,12 +440,7 @@ describe('the SMTP RSET and NOOP commands', function() {
 
 describe('web apis', function() {
   it('should show that mail was not delivered after a reset', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/me@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/me@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -514,12 +453,7 @@ describe('web apis', function() {
   });
 
   it('should return new mail delivered after a reset', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/you@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/you@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
@@ -542,19 +476,9 @@ describe('web apis', function() {
 
 describe('clearing email', function() {
   it('should work', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'DELETE',
-      path: '/mail/me@localhost',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('DELETE', '/mail/me@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      http.request({
-        host: '127.0.0.1',
-        method: 'DELETE',
-        path: '/mail/you@localhost',
-        port: webPort
-      }, function(res) {
+      http.request(requestOptions('DELETE', '/mail/you@localhost'), (res) => {
         (res.statusCode).should.equal(200);
         done();
       }).end();
@@ -562,12 +486,7 @@ describe('clearing email', function() {
   });
 
   it('should cause GET to return zero mails', function(done) {
-    http.request({
-      host: '127.0.0.1',
-      method: 'GET',
-      path: '/mail/me',
-      port: webPort
-    }, function(res) {
+    http.request(requestOptions('GET', '/mail/me'), (res) => {
       (res.statusCode).should.equal(200);
       var data = '';
       res.on('data', (chunk) => data += chunk);
