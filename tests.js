@@ -267,9 +267,9 @@ describe('web apis', function() {
   });
 });
 
-/*
- * START: redirect some well-known admin addresses out of redis
- */
+//
+// START: redirect some well-known admin addresses out of redis
+//
 describe('sending email to some well-known admin addresses', function() {
   it('should appear to work', function(done) {
     var s = net.connect(emailPort, function(err) {
@@ -467,9 +467,9 @@ describe('web apis', function() {
     }).end();
   });
 });
-/*
- * END: redirect some well-known admin addresses out of redis
- */
+//
+// END: redirect some well-known admin addresses out of redis
+//
 
 describe('the SMTP RSET and NOOP commands', function() {
   it('should be supported', function(done) {
