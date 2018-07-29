@@ -75,7 +75,21 @@ describe('sending email', function() {
         done();
       });
 
-      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\nto: me <me@localhost>\n\nhi\n.\nquit\n');
+      const sequence = [
+        'helo',
+        'mail from: <lloyd@localhost>',
+        'rcpt to: <me@localhost>',
+        'data',
+        'from: lloyd <lloyd@localhost>',
+        'to: me <me@localhost>',
+        '',
+        'hi',
+        '.',
+        'quit',
+        ''
+      ].join('\n') + '\n';
+
+      s.end(sequence);
     });
   });
 });
@@ -117,8 +131,23 @@ describe('sending to multiple recipients', function() {
         done();
       });
 
-      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\nrcpt to: <you@localhost>\ndata\n' +
-            'from: lloyd <lloyd@localhost>\nto: me <me@localhost>\ncc: you <you@localhost>\n\nhi\n.\nquit\n');
+      const sequence = [
+        'helo',
+        'mail from: <lloyd@localhost>',
+        'rcpt to: <me@localhost>',
+        'rcpt to: <you@localhost>',
+        'data',
+        'from: lloyd <lloyd@localhost>',
+        'to: me <me@localhost>',
+        'cc: you <you@localhost>',
+        '',
+        'hi',
+        '.',
+        'quit',
+        ''
+      ].join('\n') + '\n';
+
+      s.end(sequence);
     });
   });
 });
@@ -185,9 +214,29 @@ describe('sending two mails on the same TCP connection', function() {
         done();
       });
 
-      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\n' +
-            'to: me <me@localhost>\n\nhello\n.\nmail from: <me@localhost>\nrcpt to: <you@localhost>\ndata\n' +
-            'from: me <me@localhost>\nto: you <you@localhost>\n\nworld\n.\nquit\n');
+      const sequence = [
+        'helo',
+        'mail from: <lloyd@localhost>',
+        'rcpt to: <me@localhost>',
+        'data',
+        'from: lloyd <lloyd@localhost>',
+        'to: me <me@localhost>',
+        '',
+        'hello',
+        '.',
+        'mail from: <me@localhost>',
+        'rcpt to: <you@localhost>',
+        'data',
+        'from: me <me@localhost>',
+        'to: you <you@localhost>',
+        '',
+        'world',
+        '.',
+        'quit',
+        ''
+      ].join('\n') + '\n';
+
+      s.end(sequence);
     });
   });
 });
@@ -253,7 +302,7 @@ describe('sending email to some well-known admin addresses', function() {
         done();
       });
 
-      s.end([
+      const sequence = [
         'helo',
         'mail from: <lloyd@localhost>',
         'rcpt to: <hostmaster@localhost>',
@@ -265,7 +314,9 @@ describe('sending email to some well-known admin addresses', function() {
         '.',
         'quit',
         ''
-      ].join('\n') + '\n');
+      ].join('\n') + '\n';
+
+      s.end(sequence);
     });
   });
 });
@@ -299,7 +350,7 @@ describe('sending to multiple "admin" recipients', function() {
         done();
       });
 
-      s.end([
+      const sequence = [
         'helo',
         'mail from: <lloyd@localhost>',
         'rcpt to: <administrator@localhost>',
@@ -313,7 +364,9 @@ describe('sending to multiple "admin" recipients', function() {
         '.',
         'quit',
         ''
-      ].join('\n') + '\n');
+      ].join('\n') + '\n';
+
+      s.end(sequence);
     });
   });
 });
@@ -360,7 +413,7 @@ describe('sending two "admin" mails on the same TCP connection', function() {
         done();
       });
 
-      s.end([
+      const sequence = [
         'helo',
         'mail from: <lloyd@localhost>',
         'rcpt to: <admin@localhost>',
@@ -379,7 +432,9 @@ describe('sending two "admin" mails on the same TCP connection', function() {
         'world',
         '.',
         'quit'
-      ].join('\n') + '\n');
+      ].join('\n') + '\n';
+
+      s.end(sequence);
     });
   });
 });
@@ -432,8 +487,26 @@ describe('the SMTP RSET and NOOP commands', function() {
         done();
       });
 
-      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\nrset\nmail from: <me@localhost>\nnoop\n' +
-            'rcpt to: <you@localhost>\ndata\nfrom: me <me@localhost>\nto: you <you@localhost>\n\njust4you\n.\nnoop\nquit\n');
+      const sequence = [
+        'helo',
+        'mail from: <lloyd@localhost>',
+        'rcpt to: <me@localhost>',
+        'rset',
+        'mail from: <me@localhost>',
+        'noop',
+        'rcpt to: <you@localhost>',
+        'data',
+        'from: me <me@localhost>',
+        'to: you <you@localhost>',
+        '',
+        'just4you',
+        '.',
+        'noop',
+        'quit',
+        ''
+      ].join('\n') + '\n';
+
+      s.end(sequence);
     });
   });
 });
