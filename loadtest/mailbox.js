@@ -43,15 +43,15 @@ module.exports = function (port, options) {
 
   function loop(email, tries, cb) {
     const uri = url.format({
-      protocol: 'http',
       hostname: '127.0.0.1',
+      pathname: '/mail/' + email,
       port: port,
-      pathname: '/mail/' + email
+      protocol: 'http'
     });
 
     debug('checking mail', uri);
 
-    const requestOptions = { uri: uri, json: true };
+    const requestOptions = { json: true, uri: uri };
     request.get(requestOptions, function (err, res, json) {
       if (err) {
         return cb(err);

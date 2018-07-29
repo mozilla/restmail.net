@@ -15,18 +15,18 @@ let emailserver;
 let waitForEmail;
 
 const ready = {
-  webserver: false,
-  emailserver: false
+  emailserver: false,
+  webserver: false
 };
 
 const mailSenderTasks = [];
 
 const stats = {
-  errors: 0,
-  emailSent: 0,
   emailRetrieved: 0,
-  startTime: new Date(),
-  lastSendTime: new Date()
+  emailSent: 0,
+  errors: 0,
+  lastSendTime: new Date(),
+  startTime: new Date()
 };
 
 function debug() {
