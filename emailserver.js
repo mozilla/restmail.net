@@ -34,21 +34,21 @@ function mailSummary(mail) {
     new Date(mail.receivedAt).getTime() - new Date(mail.date).getTime();
 
   const summary = {
-    subject: mail.subject,
-    from: mail.from,
-    to: mail.to,
     date: mail.date,
+    deliveryTime: deliveryTime,
+    from: mail.from,
     receivedAt: mail.receivedAt,
-    deliveryTime: deliveryTime
+    subject: mail.subject,
+    to: mail.to
   };
 
   if (mail.headers) {
     summary.headers = {
-      subject: mail.headers.subject,
-      from: mail.headers.from,
-      to: mail.headers.to,
       cc: mail.headers.cc,
-      date: mail.headers.date
+      date: mail.headers.date,
+      from: mail.headers.from,
+      subject: mail.headers.subject,
+      to: mail.headers.to
     };
   }
 
