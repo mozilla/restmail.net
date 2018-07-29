@@ -75,7 +75,7 @@ describe('sending email', function() {
       should.not.exist(err);
 
       var response = '';
-      s.on('data', function(chunk) { response += chunk; });
+      s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
         response.split('\r\n')[6].should.equal('221 Bye!');
@@ -98,7 +98,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(1);
@@ -122,7 +122,7 @@ describe('sending to multiple recipients', function() {
       should.not.exist(err);
 
       var response = '';
-      s.on('data', function(chunk) { response += chunk; });
+      s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
         response.split('\r\n')[7].should.equal('221 Bye!');
@@ -146,7 +146,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(2);
@@ -174,7 +174,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(1);
@@ -200,7 +200,7 @@ describe('sending two mails on the same TCP connection', function() {
       should.not.exist(err);
 
       var response = '';
-      s.on('data', function(chunk) { response += chunk; });
+      s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
         response.split('\r\n')[10].should.equal('221 Bye!');
@@ -225,7 +225,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(3);
@@ -251,7 +251,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(2);
@@ -278,7 +278,7 @@ describe('sending email to some well-known admin addresses', function() {
       should.not.exist(err);
 
       var response = '';
-      s.on('data', function(chunk) { response += chunk; });
+      s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
         response.split('\r\n')[6].should.equal('221 Bye!');
@@ -313,7 +313,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(0);
@@ -329,7 +329,7 @@ describe('sending to multiple "admin" recipients', function() {
       should.not.exist(err);
 
       var response = '';
-      s.on('data', function(chunk) { response += chunk; });
+      s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
         response.split('\r\n')[7].should.equal('221 Bye!');
@@ -366,7 +366,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(0);
@@ -384,7 +384,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(0);
@@ -400,7 +400,7 @@ describe('sending two "admin" mails on the same TCP connection', function() {
       should.not.exist(err);
 
       var response = '';
-      s.on('data', function(chunk) { response += chunk; });
+      s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
         response.split('\r\n')[10].should.equal('221 Bye!');
@@ -442,7 +442,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(0);
@@ -460,7 +460,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(0);
@@ -479,7 +479,7 @@ describe('the SMTP RSET and NOOP commands', function() {
       should.not.exist(err);
 
       var response = '';
-      s.on('data', function(chunk) { response += chunk; });
+      s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
         var lines = response.split('\r\n');
@@ -506,7 +506,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(3);
@@ -524,7 +524,7 @@ describe('web apis', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(3);
@@ -572,7 +572,7 @@ describe('clearing email', function() {
     }, function(res) {
       (res.statusCode).should.equal(200);
       var data = '';
-      res.on('data', function (chunk) { data += chunk; });
+      res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
         data.length.should.equal(0);
