@@ -18,7 +18,9 @@ const TMP_DIR = process.env.TMP_DIR || os.tmpdir();
 var db = redis.createClient();
 
 function log(/* format, values... */) {
-  if (IS_TEST) return;
+  if (IS_TEST) {
+    return;
+  }
   var args = Array.prototype.slice.call(arguments);
   var timestamp = new Date().toISOString();
   args[0] = util.format('[%s] %s', timestamp, args[0]);
@@ -91,18 +93,26 @@ var server = smtp.createServer(HOSTNAME, function (req) {
         }
 
         db.rpush(user, JSON.stringify(mail), function(err) {
-          if (err) return logError(err);
+          if (err) {
+            return logError(err);
+          }
 
           if (config.expireAfter) {
             db.expire(user, config.expireAfter);
           }
 
           db.llen(user, function(err, replies) {
-            if (err) return logError(err);
+            if (err) {
+              return logError(err);
+            }
 
-            if (replies > 10) db.ltrim(user, -10, -1, function(err) {
-              if (err) return logError(err);
-            });
+            if (replies > 10) {
+              db.ltrim(user, -10, -1, function(err) {
+                if (err) {
+                  return logError(err);
+                }
+              });
+            }
           });
         });
       });

@@ -28,7 +28,9 @@ db.on('error', function (err) {
 var app = express();
 
 // log to console when not testing
-if (! IS_TEST) app.use(morgan('combined'));
+if (! IS_TEST) {
+  app.use(morgan('combined'));
+}
 
 app.get('/README', function(req, res) {
   res.set('Content-Type', 'text/plain');
@@ -38,7 +40,9 @@ app.get('/README', function(req, res) {
 // automatically make user part only input into email with
 // default hostname.
 function canonicalize(email) {
-  if (email.indexOf('@') === -1) email = email + '@' + HOSTNAME;
+  if (email.indexOf('@') === -1) {
+    email = email + '@' + HOSTNAME;
+  }
   return email;
 }
 
