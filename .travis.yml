@@ -3,7 +3,8 @@ sudo: false
 language: node_js
 
 node_js:
- - "4"
+ - "8"
+ - "10"
 
 services:
   - redis-server
