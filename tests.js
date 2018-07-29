@@ -130,7 +130,8 @@ describe('sending to multiple recipients', function() {
         done();
       });
 
-      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\nrcpt to: <you@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\nto: me <me@localhost>\ncc: you <you@localhost>\n\nhi\n.\nquit\n');
+      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\nrcpt to: <you@localhost>\ndata\n' +
+            'from: lloyd <lloyd@localhost>\nto: me <me@localhost>\ncc: you <you@localhost>\n\nhi\n.\nquit\n');
     });
   });
 });
@@ -207,7 +208,9 @@ describe('sending two mails on the same TCP connection', function() {
         done();
       });
 
-      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\nto: me <me@localhost>\n\nhello\n.\nmail from: <me@localhost>\nrcpt to: <you@localhost>\ndata\nfrom: me <me@localhost>\nto: you <you@localhost>\n\nworld\n.\nquit\n');
+      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\ndata\nfrom: lloyd <lloyd@localhost>\n' +
+            'to: me <me@localhost>\n\nhello\n.\nmail from: <me@localhost>\nrcpt to: <you@localhost>\ndata\n' +
+            'from: me <me@localhost>\nto: you <you@localhost>\n\nworld\n.\nquit\n');
     });
   });
 });
@@ -487,7 +490,8 @@ describe('the SMTP RSET and NOOP commands', function() {
         done();
       });
 
-      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\nrset\nmail from: <me@localhost>\nnoop\nrcpt to: <you@localhost>\ndata\nfrom: me <me@localhost>\nto: you <you@localhost>\n\njust4you\n.\nnoop\nquit\n');
+      s.end('helo\nmail from: <lloyd@localhost>\nrcpt to: <me@localhost>\nrset\nmail from: <me@localhost>\nnoop\n' +
+            'rcpt to: <you@localhost>\ndata\nfrom: me <me@localhost>\nto: you <you@localhost>\n\njust4you\n.\nnoop\nquit\n');
     });
   });
 });
