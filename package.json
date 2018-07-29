@@ -30,6 +30,6 @@
     "lint": "eslint *.js loadtest/*.js",
     "loadtest": "node loadtest/index.js",
     "start": "node webserver.js",
-    "test": "mocha --exit --globals msg -R spec tests.js && npm run loadtest"
+    "test": "npm run lint && mocha --exit --globals msg -R spec tests.js && npm run loadtest"
   }
 }
