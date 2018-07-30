@@ -7,20 +7,20 @@ const http = require('http');
 const path = require('path');
 const isSpecialUser = require('./util').isSpecialUser;
 
-const HOSTNAME = process.env.EMAIL_HOSTNAME || "restmail.net";
+const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
 const IS_TEST = process.env.NODE_ENV === 'test';
 
 // create a connection to the redis datastore
 var db = redis.createClient();
 
-db.on("error", function (err) {
+db.on('error', function (err) {
   db = null;
   if (IS_TEST) {
-    console.log(new Date().toISOString() + ": redis error! the server " +
+    console.log(new Date().toISOString() + ': redis error! the server ' +
                 "won't actually store anything!  this is just fine for local dev");
   } else {
-    console.log(new Date().toISOString() + ": FATAL: redis server error: " + err);
-    console.log(new Date().toISOString() + ": Exiting due to fatal error...");
+    console.log(new Date().toISOString() + ': FATAL: redis server error: ' + err);
+    console.log(new Date().toISOString() + ': Exiting due to fatal error...');
     process.exit(1);
   }
 });
@@ -28,7 +28,9 @@ db.on("error", function (err) {
 var app = express();
 
 // log to console when not testing
-if (!IS_TEST) app.use(morgan('combined'));
+if (! IS_TEST) {
+  app.use(morgan('combined'));
+}
 
 app.get('/README', function(req, res) {
   res.set('Content-Type', 'text/plain');
@@ -38,14 +40,16 @@ app.get('/README', function(req, res) {
 // automatically make user part only input into email with
 // default hostname.
 function canonicalize(email) {
-  if (email.indexOf('@') === -1) email = email + '@' + HOSTNAME;
+  if (email.indexOf('@') === -1) {
+    email = email + '@' + HOSTNAME;
+  }
   return email;
 }
 
 // the 'todo/get' api gets the current version of the todo list
 // from the server
 app.get('/mail/:user', function(req, res) {
-  if (!db) { 
+  if (! db) {
     return IS_TEST ? res.json([]) : res.status(500).end();
   }
 
@@ -59,23 +63,23 @@ app.get('/mail/:user', function(req, res) {
 
   db.lrange(req.params.user, -10, -1, function(err, replies) {
     if (err) {
-      console.log(new Date().toISOString() + ": ERROR", err);
+      console.log(new Date().toISOString() + ': ERROR', err);
       res.status(500).end();
     } else {
       var arr = [];
       replies.forEach(function (r) {
         try {
           arr.push(JSON.parse(r));
-        } catch(e) { }
+        } catch (e) { }
       });
-      res.set("Content-Type", "application/json");
+      res.set('Content-Type', 'application/json');
       res.send(JSON.stringify(arr, undefined, 2));
     }
   });
 });
 
 app.delete('/mail/:user', function(req, res) {
-  if (!db) {
+  if (! db) {
     return res.status(IS_TEST ? 200 : 500).end();
   }
 
@@ -86,11 +90,11 @@ app.delete('/mail/:user', function(req, res) {
   });
 });
 
-app.use(express.static(__dirname + "/website"));
+app.use(express.static(__dirname + '/website'));
 
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
-  var port = process.env['PORT'] || 8080
+  var port = process.env['PORT'] || 8080;
   console.log(new Date().toISOString(), 'Starting up on port', port);
   app.listen(port);
 } else {

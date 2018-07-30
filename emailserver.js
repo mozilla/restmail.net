@@ -10,7 +10,7 @@ const smtp = require('smtp-protocol');
 const util = require('util');
 const isSpecialUser = require('./util').isSpecialUser;
 
-const HOSTNAME = process.env.EMAIL_HOSTNAME || "restmail.net";
+const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
 const IS_TEST = process.env.NODE_ENV === 'test';
 const TMP_DIR = process.env.TMP_DIR || os.tmpdir();
 
@@ -18,7 +18,9 @@ const TMP_DIR = process.env.TMP_DIR || os.tmpdir();
 var db = redis.createClient();
 
 function log(/* format, values... */) {
-  if (IS_TEST) return;
+  if (IS_TEST) {
+    return;
+  }
   var args = Array.prototype.slice.call(arguments);
   var timestamp = new Date().toISOString();
   args[0] = util.format('[%s] %s', timestamp, args[0]);
@@ -26,7 +28,7 @@ function log(/* format, values... */) {
 }
 
 function logError(err) {
-  log("ERROR (oh noes!): " + err);
+  log('ERROR (oh noes!): ' + err);
 }
 
 function mailSummary(mail) {
@@ -34,21 +36,21 @@ function mailSummary(mail) {
     new Date(mail.receivedAt).getTime() - new Date(mail.date).getTime();
 
   const summary = {
-    subject: mail.subject,
-    from: mail.from,
-    to: mail.to,
     date: mail.date,
+    deliveryTime: deliveryTime,
+    from: mail.from,
     receivedAt: mail.receivedAt,
-    deliveryTime: deliveryTime
+    subject: mail.subject,
+    to: mail.to
   };
 
   if (mail.headers) {
     summary.headers = {
-      subject: mail.headers.subject,
-      from: mail.headers.from,
-      to: mail.headers.to,
       cc: mail.headers.cc,
-      date: mail.headers.date
+      date: mail.headers.date,
+      from: mail.headers.from,
+      subject: mail.headers.subject,
+      to: mail.headers.to
     };
   }
 
@@ -63,13 +65,13 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   // By default smtp-protocol sends a string advertising STARTTLS support (HELO vs EHLO)
   // Override this because we don't
   req.on('greeting', function(command, ack) {
-    ack.accept(250, "OK");
+    ack.accept(250, 'OK');
   });
 
   req.on('to', function(user, ack) {
-    users.push(user)
-    ack.accept(250, "OK");
-  })
+    users.push(user);
+    ack.accept(250, 'OK');
+  });
 
   req.on('message', function (stream, ack) {
     var mailparser = new MailParser({
@@ -91,38 +93,46 @@ var server = smtp.createServer(HOSTNAME, function (req) {
         }
 
         db.rpush(user, JSON.stringify(mail), function(err) {
-          if (err) return logError(err);
+          if (err) {
+            return logError(err);
+          }
 
           if (config.expireAfter) {
             db.expire(user, config.expireAfter);
           }
 
           db.llen(user, function(err, replies) {
-            if (err) return logError(err);
+            if (err) {
+              return logError(err);
+            }
 
-            if (replies > 10) db.ltrim(user, -10, -1, function(err) {
-              if (err) return logError(err);
-            });
+            if (replies > 10) {
+              db.ltrim(user, -10, -1, function(err) {
+                if (err) {
+                  return logError(err);
+                }
+              });
+            }
           });
         });
       });
     }).bind(null, users));
 
     ack.accept(354, 'OK');
-    users = []
+    users = [];
   });
 
   req.on('rset', function() {
-    users = []
-  })
+    users = [];
+  });
 
   req.on('command', function(cmd, r) {
     if (cmd.name === 'noop') {
-      r.preventDefault()
-      r.write(250)
-      r.next()
+      r.preventDefault();
+      r.write(250);
+      r.next();
     }
-  })
+  });
 });
 
 // handle starting from the command line or the test harness

@@ -7,17 +7,20 @@ const url = require('url');
 const log = require('./log');
 
 function debug() {
-  return;
+  if (! process.env.DEBUG) {
+    return;
+  }
+
   const args = Array.prototype.slice.call(arguments);
   log.apply(null, args);
 }
 
 module.exports = function (port, options) {
   const interval = options.interval || 500;
-  let maxTries = options.maxTries = options.maxTries || 10;
+  const maxTries = options.maxTries = options.maxTries || 10;
 
   function checkEmail(json, to) {
-    if (!Array.isArray(json)) {
+    if (! Array.isArray(json)) {
       return new Error('Mailbox is not an Array');
     }
 
@@ -40,15 +43,15 @@ module.exports = function (port, options) {
 
   function loop(email, tries, cb) {
     const uri = url.format({
-      protocol: 'http',
       hostname: '127.0.0.1',
+      pathname: '/mail/' + email,
       port: port,
-      pathname: '/mail/' + email
+      protocol: 'http'
     });
 
     debug('checking mail', uri);
 
-    const requestOptions = { uri: uri, json: true };
+    const requestOptions = { json: true, uri: uri };
     request.get(requestOptions, function (err, res, json) {
       if (err) {
         return cb(err);
@@ -57,14 +60,14 @@ module.exports = function (port, options) {
       if (tries < options.maxTries - 1) {
         log('mail status', res && res.statusCode, 'tries', tries);
       }
-      
+
       const emailState = checkEmail(json, email);
 
       if (emailState instanceof Error) {
         return cb(emailState);
       }
 
-      if(!emailState) {
+      if (! emailState) {
         if (tries === 0) {
           return cb(new Error('could not get mail for ' + uri));
         }
