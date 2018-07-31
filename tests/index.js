@@ -3,8 +3,8 @@ process.env.NODE_ENV = 'test';
 const should = require('should');
 const http = require('http');
 const net = require('net');
-const webserver = require('./webserver.js');
-const emailserver = require('./emailserver.js');
+const webserver = require('../webserver.js');
+const emailserver = require('../emailserver.js');
 
 var emailPort = -1;
 var webPort = -1;
