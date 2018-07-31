@@ -1,0 +1,191 @@
+Content-Type: multipart/alternative;
+ boundary="----sinikael-?=_1-15330061738540.201488097167851"
+Content-Language: en
+X-Template-Name: verifySyncEmail
+X-Template-Version: 1
+X-Link:
+ https://accounts.firefox.com/verify_email?uid=deadbeef&code=deadbeef&service=sync&resume=deadbeef&utm_medium=email&utm_campaign=fx-welcome&utm_content=fx-activate
+X-Verify-Code: deadbeefdeadbeefdeadbeefdeadbeef
+X-Flow-ID: deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+X-Flow-Begin-Time: 1533006144964
+X-Service-ID: sync
+X-Uid: deadbeefdeadbeefdeadbeefdeadbeef
+X-Email-Service: fxa-auth-server
+From: Firefox Accounts <accounts@firefox.com>
+Sender: Firefox Accounts <accounts@firefox.com>
+To: someone@example.com
+Subject: Confirm your email and start to sync!
+Message-ID: <0000000000000000-00000000-0000-0000-0000-000000000000-000000@us-west-2.amazonses.com>
+Date: Tue, 31 Jul 2018 03:02:53 +0000
+MIME-Version: 1.0
+
+------sinikael-?=_1-15330061738540.201488097167851
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Ready, set, sync
+
+Confirm you=E2=80=99ve received this email and =
+we=E2=80=99ll help you install and sync Firefox on all your devices =
+starting with:
+
+Firefox on Mac OS X 10.13
+San Jose, CA, United States =
+(estimated)
+IP address: 67.124.149.8
+
+Verify email  &rarr; https://accounts.firefox.com/verify_email?uid=xxx
+
+Once confirmed, we will help you install and connect Firefox on at least =
+one other device.
+
+This is an automated email; if you received it in error,=
+ no action is required. For more information, please visit https://support.=
+mozilla.org/kb/im-having-problems-with-my-firefox-account?=
+utm_medium=3Demail&utm_campaign=3Dfx-welcome&utm_content=3Dfx-support
+
+Mozilla. 331 E Evelyn Ave, Mountain View, CA 94041
+Mozilla Privacy Policy =
+https://www.mozilla.org/privacy?utm_medium=3Demail&utm_campaign=3Dfx-welcom=
+e&utm_content=3Dfx-privacy
+
+------sinikael-?=_1-15330061738540.201488097167851
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.=
+w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns=3D"http://www.w3=
+.org/1999/xhtml">
+<head>
+  <meta http-equiv=3D"Content-Type" =
+content=3D"text/html; charset=3DUTF-8" />
+  <title>Firefox Accounts</title>
+</head>
+
+<body style=3D"-ms-text-size-adjust: 100%; =
+-webkit-text-size-adjust: 100%; margin: 0; padding: 0;">
+<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+width=3D"310" style=3D"-webkit-text-size-adjust: 100%; border-collapse: =
+collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 310px; =
+margin: 0 auto;">
+
+<!--Logo-->
+<tr style=3D"page-break-before: always">
+  <td align=3D"center" id=3D"firefox-logo" style=3D"padding: 20px 0;">
+
+      <img src=3D"https://image.e.mozilla.org/lib/fe9915707361037e75/m/3/fx=
+a_july2017_v2.png" height=3D"137" width=3D"270" alt=3D"" =
+style=3D"-ms-interpolation-mode: bicubic;" />
+  </td>
+</tr>
+
+
+<!--Header Area-->
+<tr style=3D"page-break-before: always">
+  <td valign=3D"top">
+    <h1 style=3D"font-family: sans-serif; font-size: =
+21px; line-height: 29px; font-weight: normal; margin: 0 0 11px 0; =
+text-align: center;">Ready, set, sync</h1>
+    <p class=3D"primary" =
+style=3D"font-family: sans-serif; font-size: 14px; line-height: 21px; =
+font-weight: normal; margin: 0 0 21px 0; text-align: center;">Confirm =
+you=E2=80=99ve received this email and we=E2=80=99ll help you install and =
+sync Firefox on all your devices starting with:<p/>
+      <p style=3D"font-family:sans-serif; font-size: 13px; line-height: =
+20px; font-weight: normal; margin: 0 0 24px 0px; text-align: center; color:=
+ #4a4a4f;">
+   =20
+    Firefox on Mac OS X 10.13<br/>
+    San Jose, CA, United States (estimated)<br/>
+    IP address: 67.124.149=
+.8<br/>
+   =20
+</p>
+
+     =20
+  </td>
+</tr>
+
+<!--Button Area-->
+<tr height=3D"50">
+  <td align=3D"center" valign=3D"top">
+    <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" height=3D"100%"=
+ width=3D"100%" id=3D"email-button" style=3D"-webkit-text-size-adjust: =
+100%; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: =
+0pt; background-color: #0a84ff; border-radius: 4px; height: 50px; width: =
+310px !important;">
+      <tr style=3D"page-break-before: always">
+        <td align=3D"center" valign=3D"middle" id=3D"button-content" =
+style=3D"font-family: sans-serif; font-weight: normal; text-align: center; =
+margin: 0; color: #ffffff; font-size: 20px; line-height: 100%;">
+          <!--[if mso]>
+          <v:roundrect xmlns:v=3D"urn:schemas-micro=
+soft-com:vml" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+href=3D"https://accounts.firefox.com/verify_email?uid=deadbeefdeadbeefdeadb=
+" arcsize=3D"10%" stroke=3D"f" fillcolor=3D"#0a84ff">
+            <w:anchorlock/>
+            <center>
+          <![endif]-->
+          <!--[if mso]>
+          </center>
+          </v:roundrect>
+          <![endif]-->
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+
+<!--Caption Area-->
+<tr =
+style=3D"page-break-before: always">
+  <td border=3D"0" cellpadding=3D"0" =
+cellspacing=3D"0" height=3D"100%" width=3D"100%">
+    <br/>
+    <p class=3D"primary" style=3D"font-family: sans-serif; font-size: 14px;=
+ line-height: 21px; font-weight: normal; margin: 0 0 24px 0; text-align: =
+center;">Once confirmed, we will help you install and connect Firefox on at=
+ least one other device.
+  </td>
+</tr>
+
+<!--Button Area-->
+<tr style=3D"page-break-before: always">
+  <td border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" height=3D"100%" width=3D"100%">
+    <br/>
+    <p class=3D"secondary" style=3D"font-family: sans-serif; =
+font-weight: normal; margin: 0 0 12px 0; text-align: center; color: =
+#737373; font-size: 11px; line-height: 18px; width: 310px !important; =
+word-wrap:break-word">This is an automated email; if you received it in =
+error, no action is required. For more information, please visit <a =
+href=3D"https://support.mozilla.org/kb/im-having-problems-with-my-firefox-a=
+ccount?utm_medium=3Demail&utm_campaign=3Dfx-welcome&utm_content=3Dfx-suppor=
+t" style=3D"color: #0a84ff; text-decoration: none; font-family: =
+sans-serif;">Mozilla Support</a>.</p>
+  </td>
+</tr>
+
+
+<tr style=3D"page-break-before: always">
+  <td valign=3D"top">
+    <p style=3D"font-family: sans-serif; font-weight: normal; margin: 0; =
+text-align: center; color: #737373; font-size: 11px; line-height: 18px; =
+width: 310px !important; word-wrap:break-word">Mozilla. 331 E Evelyn Ave, =
+Mountain View, CA 94041
+    <br />
+    <a href=3D"https://www.mozilla.=
+org/privacy?utm_medium=3Demail&utm_campaign=3Dfx-welcome&utm_content=3Dfx-p=
+rivacy" style=3D"color: #0a84ff; text-decoration: none; font-family: =
+sans-serif; font-size: 11px; line-height: 18px;">Mozilla Privacy =
+Policy</a></p>
+  </td>
+</tr>
+
+</table>
+
+</body>
+</html>
+
+------sinikael-?=_1-15330061738540.201488097167851--
