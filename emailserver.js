@@ -58,7 +58,7 @@ function mailSummary(mail) {
 }
 
 var server = smtp.createServer(HOSTNAME, function (req) {
-  log('Handling SMTP request');
+  log(new Date().toISOString() + ' Handling SMTP request');
 
   var users = [];
 
@@ -69,11 +69,13 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   });
 
   req.on('to', function(user, ack) {
+    log(new Date().toISOString() + ' on to ' + user);
     users.push(user);
     ack.accept(250, 'OK');
   });
 
   req.on('message', function (stream, ack) {
+    log(new Date().toISOString() + ' onmessage');
     var mailparser = new MailParser({
       streamAttachments: true
     });
@@ -88,6 +90,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
         const specialUser = isSpecialUser(user);
         if (specialUser) {
           const mailfile = path.join(TMP_DIR, 'restmail-' + specialUser);
+          log(new Date().toISOString() + 'appending to', mailfile);
           fs.appendFileSync(mailfile, JSON.stringify(mail) + '\n');
           return;
         }
@@ -127,6 +130,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   });
 
   req.on('command', function(cmd, r) {
+    log(new Date().toISOString() + 'oncommand ' + JSON.stringify(cmd));
     if (cmd.name === 'noop') {
       r.preventDefault();
       r.write(250);
