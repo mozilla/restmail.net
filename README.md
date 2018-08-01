@@ -79,7 +79,7 @@ fields stripped out):
       }
     ]
 
-## restmail on your domain
+## restmail on your domain (deprecated; the public restmail.net is now resricted).
 
 You can use restmail from custom domains:  Just set restmail as your mail exchanger:
 
