@@ -5,6 +5,7 @@ const http = require('http');
 const net = require('net');
 const webserver = require('../webserver.js');
 const emailserver = require('../emailserver.js');
+const config = require('../config.js');
 
 var emailPort = -1;
 var webPort = -1;
@@ -55,6 +56,36 @@ describe('loading main page content path /README', function() {
 describe('clearing email', function() {
   it('should work', function(done) {
     http.request(requestOptions('DELETE', '/mail/me@localhost'), (res) => {
+      (res.statusCode).should.equal(200);
+      done();
+    }).end();
+  });
+  it('should work', function(done) {
+    http.request(requestOptions('DELETE', '/mail/you@localhost'), (res) => {
+      (res.statusCode).should.equal(200);
+      done();
+    }).end();
+  });
+  it('should work', function(done) {
+    http.request(requestOptions('DELETE', '/mail/accounting@localhost'), (res) => {
+      (res.statusCode).should.equal(200);
+      done();
+    }).end();
+  });
+  it('should work', function(done) {
+    http.request(requestOptions('DELETE', '/mail/finance@localhost'), (res) => {
+      (res.statusCode).should.equal(200);
+      done();
+    }).end();
+  });
+  it('should work', function(done) {
+    http.request(requestOptions('DELETE', '/mail/sales@localhost'), (res) => {
+      (res.statusCode).should.equal(200);
+      done();
+    }).end();
+  });
+  it('should work', function(done) {
+    http.request(requestOptions('DELETE', '/mail/engineering@localhost'), (res) => {
       (res.statusCode).should.equal(200);
       done();
     }).end();
@@ -569,5 +600,85 @@ describe('clearing email', function() {
         done();
       });
     }).end();
+  });
+});
+
+describe('sending to multiple recipients', function() {
+  it('config.maximumRcptTo is a number', (done) => {
+    should(config.maximumRcptTo).equal(5);
+    done();
+  });
+
+  it('<= config.maximumRcptTo should work', (done) => {
+    var s = net.connect(emailPort, function(err) {
+      should.not.exist(err);
+
+      var response = '';
+      s.on('data', (chunk) => response += chunk);
+
+      s.on('end', function() {
+        response.split('\r\n')[10].should.equal('221 Bye!');
+        s.destroy();
+        done();
+      });
+
+      const sequence = [
+        'helo',
+        'mail from: <lloyd@localhost>',
+        'rcpt to: <me@localhost>',
+        'rcpt to: <you@localhost>',
+        'rcpt to: <accounting@localhost>',
+        'rcpt to: <finance@localhost>',
+        'rcpt to: <sales@localhost>',
+        'data',
+        'from: lloyd <lloyd@localhost>',
+        'to: me <me@localhost>',
+        'cc: you <you@localhost>',
+        '',
+        'hi',
+        '.',
+        'quit',
+        ''
+      ].join('\n') + '\n';
+
+      s.end(sequence);
+    });
+  });
+
+  it('> config.maximumRcptTo should be rejected', (done) => {
+    var s = net.connect(emailPort, function(err) {
+      should.not.exist(err);
+
+      var response = '';
+      s.on('data', (chunk) => response += chunk);
+
+      s.on('end', function() {
+        response.split('\r\n')[8].should.equal('452 Too many recipients');
+        s.destroy();
+        done();
+      });
+
+      const sequence = [
+        'helo',
+        'mail from: <lloyd@localhost>',
+        'rcpt to: <me@localhost>',
+        'rcpt to: <you@localhost>',
+        'rcpt to: <accounting@localhost>',
+        'rcpt to: <finance@localhost>',
+        'rcpt to: <sales@localhost>',
+        'rcpt to: <engineering@localhost>',
+        'data',
+        'from: lloyd <lloyd@localhost>',
+        'to: me <me@localhost>',
+        'cc: you <you@localhost>',
+        '',
+        'hi',
+        '.',
+        'quit',
+        ''
+      ].join('\n') + '\n';
+
+      s.end(sequence);
+    });
   });
 });
