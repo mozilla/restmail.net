@@ -60,7 +60,9 @@ function mailSummary(mail) {
 var server = smtp.createServer(HOSTNAME, function (req) {
   log(new Date().toISOString() + ' Handling SMTP request');
 
-  var users = [];
+  let users = [];
+  let rcptTo = 0;
+  let rejected = false;
 
   // By default smtp-protocol sends a string advertising STARTTLS support (HELO vs EHLO)
   // Override this because we don't
@@ -69,12 +71,22 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   });
 
   req.on('to', function(user, ack) {
-    log(new Date().toISOString() + ' on to ' + user);
+    rcptTo += 1;
+    log(new Date().toISOString() + ' on to ' + rcptTo + ' ' + config.maximumRcptTo + ' ' + user);
     users.push(user);
+    if (rcptTo > config.maximumRcptTo) {
+      log(new Date().toISOString() + ' rejected');
+      rejected = true;
+      return ack.reject(452, 'Too many recipients');
+    }
     ack.accept(250, 'OK');
   });
 
   req.on('message', function (stream, ack) {
+    if (rejected) {
+      return;
+    }
+
     log(new Date().toISOString() + ' onmessage');
     var mailparser = new MailParser({
       streamAttachments: true
@@ -130,8 +142,8 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   });
 
   req.on('command', function(cmd, r) {
-    log(new Date().toISOString() + 'oncommand ' + JSON.stringify(cmd));
     if (cmd.name === 'noop') {
+      log(new Date().toISOString() + ' oncommand ' + JSON.stringify(cmd));
       r.preventDefault();
       r.write(250);
       r.next();
@@ -146,7 +158,8 @@ if (process.argv[1] === __filename) {
   server.listen(port);
 } else {
   module.exports = function(cb) {
-    server.listen(0, function(err) {
+    var port = process.env.PORT || 0;
+    server.listen(port, function(err) {
       cb(err, server.address().port);
     });
   };
