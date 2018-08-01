@@ -90,6 +90,12 @@ describe('clearing email', function() {
       done();
     }).end();
   });
+  it('should work', function(done) {
+    http.request(requestOptions('DELETE', '/mail/someone@badexample.com'), (res) => {
+      (res.statusCode).should.equal(200);
+      done();
+    }).end();
+  });
 });
 
 describe('sending email', function() {
@@ -680,5 +686,55 @@ describe('sending to multiple recipients', function() {
 
       s.end(sequence);
     });
+  });
+});
+
+describe('sending email with an unallowed domain aborts the dialog', function() {
+  it('should get error 553 mailbox name not allowed', function(done) {
+    var s = net.connect(emailPort, function(err) {
+      should.not.exist(err);
+
+      var response = '';
+      s.on('data', (chunk) => response += chunk);
+
+      s.on('end', function() {
+        response.split('\r\n')[4].should.equal('553 Requested action not taken: mailbox name not allowed');
+        s.destroy();
+        done();
+      });
+
+      const sequence = [
+        'helo',
+        'mail from: <lloyd@localhost>',
+        'rcpt to: <me@localhost>',
+        'rcpt to: <someone@badexample.com>',
+        'data',
+        'from: lloyd <lloyd@localhost>',
+        'to: me <me@localhost>',
+        'to: someone <someone@badexample.com>',
+        '',
+        'hi',
+        '.',
+        'quit',
+        ''
+      ].join('\n') + '\n';
+
+      s.end(sequence);
+    });
+  });
+});
+
+describe('web apis', function() {
+  it('should not return an email stored for an unallowed domain', function(done) {
+    http.request(requestOptions('GET', '/mail/someone@badexample.com'), (res) => {
+      (res.statusCode).should.equal(200);
+      var data = '';
+      res.on('data', (chunk) => data += chunk);
+      res.on('end', function () {
+        data = JSON.parse(data);
+        data.length.should.equal(0);
+        done();
+      });
+    }).end();
   });
 });

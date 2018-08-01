@@ -31,6 +31,20 @@ function logError(err) {
   log('ERROR (oh noes!): ' + err);
 }
 
+function allowedDomain(address) {
+  const allowedDomains = config.rcptToDomainWhitelist;
+  const match = address.match(/.*@(.*)/);
+
+  if (match && match[1]) {
+    const domain = match[1];
+    if (allowedDomains.includes(domain)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 function mailSummary(mail) {
   const deliveryTime =
     new Date(mail.receivedAt).getTime() - new Date(mail.date).getTime();
@@ -73,12 +87,22 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   req.on('to', function(user, ack) {
     rcptTo += 1;
     log(new Date().toISOString() + ' on to ' + rcptTo + ' ' + config.maximumRcptTo + ' ' + user);
+
+    const allowed = allowedDomain(user);
+    if (! allowed) {
+      log(new Date().toISOString() + ' user ' + user + 'is not in an allowed domain. Dropping');
+      rejected = true;
+      return ack.reject(553, 'Requested action not taken: mailbox name not allowed');
+    }
+
     users.push(user);
+
     if (rcptTo > config.maximumRcptTo) {
-      log(new Date().toISOString() + ' rejected');
+      log(new Date().toISOString() + ' ' + user + ' rejected');
       rejected = true;
       return ack.reject(452, 'Too many recipients');
     }
+
     ack.accept(250, 'OK');
   });
 
