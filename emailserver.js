@@ -8,7 +8,8 @@ const path = require('path');
 const redis = require('redis');
 const smtp = require('smtp-protocol');
 const util = require('util');
-const isSpecialUser = require('./util').isSpecialUser;
+
+const { isSpecialUser, isPermittedDomain } = require('./util');
 
 const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
 const IS_TEST = process.env.NODE_ENV === 'test';
@@ -29,20 +30,6 @@ function log(/* format, values... */) {
 
 function logError(err) {
   log('ERROR (oh noes!): ' + err);
-}
-
-function allowedDomain(address) {
-  const allowedDomains = config.rcptToDomainWhitelist;
-  const match = address.match(/.*@(.*)/);
-
-  if (match && match[1]) {
-    const domain = match[1];
-    if (allowedDomains.includes(domain)) {
-      return true;
-    }
-  }
-
-  return false;
 }
 
 function mailSummary(mail) {
@@ -88,11 +75,11 @@ var server = smtp.createServer(HOSTNAME, function (req) {
     rcptTo += 1;
     log(new Date().toISOString() + ' on to ' + rcptTo + ' ' + config.maximumRcptTo + ' ' + user);
 
-    const allowed = allowedDomain(user);
-    if (! allowed) {
-      log(new Date().toISOString() + ' user ' + user + 'is not in an allowed domain. Dropping');
+    const permitted = isPermittedDomain(user, config);
+    if (! permitted) {
+      log(new Date().toISOString() + ' user ' + user + ' is not in an permitted domain. Dropping');
       rejected = true;
-      return ack.reject(553, 'Requested action not taken: mailbox name not allowed');
+      return ack.reject(553, 'Requested action not taken: mailbox name not allowed'); // RFC 2821
     }
 
     users.push(user);
@@ -100,7 +87,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
     if (rcptTo > config.maximumRcptTo) {
       log(new Date().toISOString() + ' ' + user + ' rejected');
       rejected = true;
-      return ack.reject(452, 'Too many recipients');
+      return ack.reject(452, 'Too many recipients'); // RFC 2821
     }
 
     ack.accept(250, 'OK');
