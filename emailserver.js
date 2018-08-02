@@ -71,8 +71,8 @@ function mailSummary(mail) {
 }
 
 var server = smtp.createServer(HOSTNAME, function (req) {
-  const socketId = socketInfo(req.socket);
-  log(`Handling SMTP request: ${socketId}`);
+  const socketPair = socketInfo(req.socket);
+  log(`${socketPair}: Handling SMTP request`);
 
   let users = [];
   let rcptTo = 0;
@@ -81,16 +81,17 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   // By default smtp-protocol sends a string advertising STARTTLS support (HELO vs EHLO)
   // Override this because we don't
   req.on('greeting', function(command, ack) {
+    log(`${socketPair}: ongreeting`);
     ack.accept(250, 'OK');
   });
 
   req.on('to', function(user, ack) {
     rcptTo += 1;
-    log(`on to ${rcptTo} ${config.maximumRcptTo} ${user}`);
+    log(`${socketPair}: onto ${rcptTo} ${config.maximumRcptTo} ${user}`);
 
     const permitted = isPermittedDomain(user, config);
     if (! permitted) {
-      log(`user ${user} is not in an allowed domain. Dropping!`);
+      log(`${socketPair}: user ${user} is not in an allowed domain. Dropping!`);
       rejected = true;
       return ack.reject(553, 'Requested action not taken: mailbox name not allowed'); // RFC 2821
     }
@@ -98,7 +99,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
     users.push(user);
 
     if (rcptTo > config.maximumRcptTo) {
-      log(`Exceeded rcptTo: ${rcptTo}. ${user} rejected`);
+      log(`${socketPair}: Exceeded rcptTo: ${rcptTo}. ${user} rejected`);
       rejected = true;
       return ack.reject(452, 'Too many recipients'); // RFC 2821
     }
@@ -111,7 +112,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
       return;
     }
 
-    log('handling onmessage');
+    log(`${socketPair}: handling onmessage`);
     var mailparser = new MailParser({
       streamAttachments: true
     });
@@ -120,18 +121,18 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 
     mailparser.on('end', (function(users, mail) {
       mail.receivedAt = new Date().toISOString();
-      log(`Received message for ${users}: ${mailSummary(mail)}`);
+      log(`${socketPair}: Received message for ${users}: ${mailSummary(mail)}`);
       users.forEach(function(user) {
         // Divert special admin-type addresses into local files
         const specialUser = isSpecialUser(user);
         if (specialUser) {
           const mailfile = path.join(TMP_DIR, 'restmail-' + specialUser);
-          log(`isSpecialUser: Appending to ${mailfile}`);
+          log(`${socketPair}: isSpecialUser: Appending to ${mailfile}`);
           fs.appendFileSync(mailfile, JSON.stringify(mail) + '\n');
           return;
         }
 
-        log(`Storing message for ${user}`);
+        log(`${socketPair}: Storing message for ${user}`);
         db.rpush(user, JSON.stringify(mail), function(err) {
           if (err) {
             return logError(err);
@@ -163,12 +164,13 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   });
 
   req.on('rset', function() {
+    log(`${socketPair}: onrset`);
     users = [];
   });
 
   req.on('command', function(cmd, r) {
     if (cmd.name === 'noop') {
-      log(`oncommand: ${cmd.name}`);
+      log(`${socketPair}: oncommand: ${cmd.name}`);
       r.preventDefault();
       r.write(250);
       r.next();
