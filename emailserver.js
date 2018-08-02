@@ -32,6 +32,19 @@ function logError(err) {
   log('ERROR (oh noes!): ' + err);
 }
 
+function socketInfo(socket) {
+  if (! socket) {
+    return 'unknown<->unknown';
+  }
+
+  const pair = util.format('%s:%s<->%s:%s',
+                           socket.localAddress.replace(/^::ffff:/, ''),
+                           socket.localPort,
+                           socket.remoteAddress.replace(/^::ffff:/, ''),
+                           socket.remotePort);
+  return pair;
+}
+
 function mailSummary(mail) {
   const deliveryTime =
     new Date(mail.receivedAt).getTime() - new Date(mail.date).getTime();
@@ -59,7 +72,8 @@ function mailSummary(mail) {
 }
 
 var server = smtp.createServer(HOSTNAME, function (req) {
-  log(new Date().toISOString() + ' Handling SMTP request');
+  const socketPair = socketInfo(req.socket);
+  log(`${socketPair}: Handling SMTP request`);
 
   let users = [];
   let rcptTo = 0;
@@ -68,16 +82,17 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   // By default smtp-protocol sends a string advertising STARTTLS support (HELO vs EHLO)
   // Override this because we don't
   req.on('greeting', function(command, ack) {
+    log(`${socketPair}: ongreeting`);
     ack.accept(250, 'OK');
   });
 
   req.on('to', function(user, ack) {
     rcptTo += 1;
-    log(new Date().toISOString() + ' on to ' + rcptTo + ' ' + config.maximumRcptTo + ' ' + user);
+    log(`${socketPair}: onto ${rcptTo} ${config.maximumRcptTo} ${user}`);
 
     const permitted = isPermittedDomain(user, config);
     if (! permitted) {
-      log(new Date().toISOString() + ' user ' + user + ' is not in an permitted domain. Dropping');
+      log(`${socketPair}: user ${user} is not in an allowed domain. Dropping!`);
       rejected = true;
       return ack.reject(553, 'Requested action not taken: mailbox name not allowed'); // RFC 2821
     }
@@ -85,7 +100,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
     users.push(user);
 
     if (rcptTo > config.maximumRcptTo) {
-      log(new Date().toISOString() + ' ' + user + ' rejected');
+      log(`${socketPair}: Exceeded rcptTo: ${rcptTo}. ${user} rejected`);
       rejected = true;
       return ack.reject(452, 'Too many recipients'); // RFC 2821
     }
@@ -98,7 +113,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
       return;
     }
 
-    log(new Date().toISOString() + ' onmessage');
+    log(`${socketPair}: handling onmessage`);
     var mailparser = new MailParser({
       streamAttachments: true
     });
@@ -107,17 +122,18 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 
     mailparser.on('end', (function(users, mail) {
       mail.receivedAt = new Date().toISOString();
-      log('Received message for', users, mailSummary(mail));
+      log(`${socketPair}: Received message for ${users}: ${mailSummary(mail)}`);
       users.forEach(function(user) {
         // Divert special admin-type addresses into local files
         const specialUser = isSpecialUser(user);
         if (specialUser) {
           const mailfile = path.join(TMP_DIR, 'restmail-' + specialUser);
-          log(new Date().toISOString() + 'appending to', mailfile);
+          log(`${socketPair}: isSpecialUser: Appending to ${mailfile}`);
           fs.appendFileSync(mailfile, JSON.stringify(mail) + '\n');
           return;
         }
 
+        log(`${socketPair}: Storing message for ${user}`);
         db.rpush(user, JSON.stringify(mail), function(err) {
           if (err) {
             return logError(err);
@@ -149,12 +165,13 @@ var server = smtp.createServer(HOSTNAME, function (req) {
   });
 
   req.on('rset', function() {
+    log(`${socketPair}: onrset`);
     users = [];
   });
 
   req.on('command', function(cmd, r) {
     if (cmd.name === 'noop') {
-      log(new Date().toISOString() + ' oncommand ' + JSON.stringify(cmd));
+      log(`${socketPair}: oncommand: ${cmd.name}`);
       r.preventDefault();
       r.write(250);
       r.next();
@@ -165,7 +182,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
   var port = process.env.PORT || 9025;
-  log('Starting up on port', port);
+  log(`Starting up on port ${port}`);
   server.listen(port);
 } else {
   module.exports = function(cb) {
