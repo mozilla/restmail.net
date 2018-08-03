@@ -182,7 +182,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
   var port = process.env.PORT || 9025;
-  log(`Starting up on port ${port}`);
+  log(`Starting up on port ${port} ${JSON.stringify(config)}`);
   server.listen(port);
 } else {
   module.exports = function(cb) {

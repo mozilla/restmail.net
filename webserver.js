@@ -5,7 +5,9 @@ const morgan = require('morgan');
 const redis = require('redis');
 const http = require('http');
 const path = require('path');
-const isSpecialUser = require('./util').isSpecialUser;
+
+const config = require('./config');
+const { isSpecialUser } = require('./util');
 
 const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
 const IS_TEST = process.env.NODE_ENV === 'test';
@@ -95,14 +97,14 @@ app.use(express.static(__dirname + '/website'));
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
   var port = process.env['PORT'] || 8080;
-  console.log(new Date().toISOString(), 'Starting up on port', port);
+  console.log(`[${new Date().toISOString()}]: Starting up on port ${port} ${JSON.stringify(config)}`);
   app.listen(port);
 } else {
   module.exports = function(cb) {
     var server = http.createServer(app);
     server.listen(function() {
       var port = server.address().port;
-      console.log(new Date().toISOString(), 'Starting up on port', port);
+      console.log(`[${new Date().toISOString()}]: Starting up on port ${port} ${JSON.stringify(config)}`);
       cb(null, port);
     });
   };
