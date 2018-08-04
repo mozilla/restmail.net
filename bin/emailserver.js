@@ -16,14 +16,14 @@ const IS_TEST = process.env.NODE_ENV === 'test';
 const TMP_DIR = process.env.TMP_DIR || os.tmpdir();
 
 // create a connection to the redis datastore
-var db = redis.createClient();
+const db = redis.createClient();
 
 function log(/* format, values... */) {
   if (IS_TEST) {
     return;
   }
-  var args = Array.prototype.slice.call(arguments);
-  var timestamp = new Date().toISOString();
+  const args = Array.prototype.slice.call(arguments);
+  const timestamp = new Date().toISOString();
   args[0] = util.format('[%s] %s', timestamp, args[0]);
   process.stderr.write(util.format.apply(null, args) + '\n');
 }
@@ -71,7 +71,7 @@ function mailSummary(mail) {
   return JSON.stringify(summary);
 }
 
-var server = smtp.createServer(HOSTNAME, function (req) {
+const server = smtp.createServer(HOSTNAME, function (req) {
   const socketPair = socketInfo(req.socket);
   log(`${socketPair}: Handling SMTP request`);
 
@@ -114,7 +114,7 @@ var server = smtp.createServer(HOSTNAME, function (req) {
     }
 
     log(`${socketPair}: handling onmessage`);
-    var mailparser = new MailParser({
+    const mailparser = new MailParser({
       streamAttachments: true
     });
 
@@ -181,12 +181,12 @@ var server = smtp.createServer(HOSTNAME, function (req) {
 
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
-  var port = process.env.PORT || 9025;
+  const port = process.env.PORT || 9025;
   log(`Starting up on port ${port} ${JSON.stringify(config)}`);
   server.listen(port);
 } else {
   module.exports = function(cb) {
-    var port = process.env.PORT || 0;
+    const port = process.env.PORT || 0;
     server.listen(port, function(err) {
       cb(err, server.address().port);
     });
