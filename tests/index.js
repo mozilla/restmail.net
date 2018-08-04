@@ -3,9 +3,9 @@ process.env.NODE_ENV = 'test';
 const should = require('should');
 const http = require('http');
 const net = require('net');
-const webserver = require('../webserver.js');
-const emailserver = require('../emailserver.js');
-const config = require('../config.js');
+const webserver = require('../bin/webserver.js');
+const emailserver = require('../bin/emailserver.js');
+const config = require('../lib/config.js');
 
 var emailPort = -1;
 var webPort = -1;

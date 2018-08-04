@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const MailParser = require('mailparser').MailParser;
-const config = require('./config');
+const config = require('../lib/config');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -9,7 +9,7 @@ const redis = require('redis');
 const smtp = require('smtp-protocol');
 const util = require('util');
 
-const { isSpecialUser, isPermittedDomain } = require('./util');
+const { isSpecialUser, isPermittedDomain } = require('../lib/util');
 
 const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
 const IS_TEST = process.env.NODE_ENV === 'test';

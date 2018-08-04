@@ -27,9 +27,9 @@
     "node": ">= 8"
   },
   "scripts": {
-    "lint": "eslint *.js tests/*.js loadtest/*.js",
+    "lint": "eslint bin/*.js lib/*.js tests/*.js loadtest/*.js",
     "loadtest": "node loadtest/index.js -d 3000",
-    "start": "node webserver.js",
+    "start": "node bin/webserver.js",
     "test": "npm run lint && npm run tests && npm run loadtest",
     "tests": "mocha --exit --globals msg -R spec tests/*.js"
   }

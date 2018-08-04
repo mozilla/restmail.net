@@ -6,8 +6,8 @@ const redis = require('redis');
 const http = require('http');
 const path = require('path');
 
-const config = require('./config');
-const { isSpecialUser } = require('./util');
+const config = require('../lib/config');
+const { isSpecialUser } = require('../lib/util');
 
 const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
 const IS_TEST = process.env.NODE_ENV === 'test';
@@ -34,9 +34,10 @@ if (! IS_TEST) {
   app.use(morgan('combined'));
 }
 
+const readme = path.resolve(__dirname, '..', 'README.md');
 app.get('/README', function(req, res) {
   res.set('Content-Type', 'text/plain');
-  res.sendFile(path.join(__dirname, 'README.md'));
+  res.sendFile(path.join(readme));
 });
 
 // automatically make user part only input into email with
@@ -92,7 +93,8 @@ app.delete('/mail/:user', function(req, res) {
   });
 });
 
-app.use(express.static(__dirname + '/website'));
+const website = path.resolve(__dirname, '..', 'website');
+app.use(express.static(website));
 
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {

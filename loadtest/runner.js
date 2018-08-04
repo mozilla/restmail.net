@@ -57,10 +57,10 @@ function setupChild(child, name) {
 function startServers() {
   const dfd = P.defer();
 
-  webserver = spawn('node', [ path.join(__dirname, '..', 'webserver.js') ]);
+  webserver = spawn('node', [ path.join(__dirname, '..', 'bin', 'webserver.js') ]);
   setupChild(webserver, 'webserver');
 
-  emailserver = spawn('node', [ path.join(__dirname, '..', 'emailserver.js') ]);
+  emailserver = spawn('node', [ path.join(__dirname, '..', 'bin', 'emailserver.js') ]);
   setupChild(emailserver, 'emailserver');
 
   const waitForStartup = setInterval(function() {
