@@ -9,11 +9,10 @@ const path = require('path');
 const config = require('../lib/config');
 const { isSpecialUser } = require('../lib/util');
 
-const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
-const IS_TEST = process.env.NODE_ENV === 'test';
+const IS_TEST = (config.env === 'test');
 
 // create a connection to the redis datastore
-let db = redis.createClient();
+let db = redis.createClient({ host: config.redis.host, port: config.redis.port });
 
 db.on('error', function (err) {
   db = null;
@@ -44,7 +43,7 @@ app.get('/README', function(req, res) {
 // default hostname.
 function canonicalize(email) {
   if (email.indexOf('@') === -1) {
-    email = email + '@' + HOSTNAME;
+    email = email + '@' + config.email.host;
   }
   return email;
 }
@@ -98,7 +97,7 @@ app.use(express.static(website));
 
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
-  const port = process.env['PORT'] || 8080;
+  const port = config.webPort;
   console.log(`[${new Date().toISOString()}]: Starting up on port ${port} ${JSON.stringify(config)}`);
   app.listen(port);
 } else {

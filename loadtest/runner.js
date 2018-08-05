@@ -6,6 +6,7 @@ const util = require('util');
 
 const P = require('bluebird');
 
+const config = require('../lib/config');
 const log = require('./log');
 const mailbox = require('./mailbox');
 const sendmail = require('./sendmail');
@@ -30,7 +31,7 @@ const stats = {
 };
 
 function debug() {
-  if (! process.env.DEBUG) {
+  if (! config.loadtest.debug) {
     return;
   }
 
@@ -41,7 +42,7 @@ function debug() {
 function setupChild(child, name) {
   [ 'stdout', 'stderr' ].forEach(function(io) {
     child[io].on('data', function(buf) {
-      if (process.env.LOG_TO_CONSOLE) {
+      if (config.loadtest.logToConsole) {
         buf.toString().split('\n').forEach(function(ln) {
           const line = ln.trim();
           if (line.length) {
@@ -102,6 +103,7 @@ function sendEmail(port) {
   }
 
   stats.lastSendTime = new Date();
+  debug(`sending ${port} ${from} ${email}`);
   sendmail('127.0.0.1', port, from, email)
     .then(onSuccess, onError);
 }

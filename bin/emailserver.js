@@ -3,7 +3,6 @@
 const MailParser = require('mailparser').MailParser;
 const config = require('../lib/config');
 const fs = require('fs');
-const os = require('os');
 const path = require('path');
 const redis = require('redis');
 const smtp = require('smtp-protocol');
@@ -11,12 +10,10 @@ const util = require('util');
 
 const { isSpecialUser, isPermittedDomain } = require('../lib/util');
 
-const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
-const IS_TEST = process.env.NODE_ENV === 'test';
-const TMP_DIR = process.env.TMP_DIR || os.tmpdir();
+const IS_TEST = (config.env === 'test');
 
 // create a connection to the redis datastore
-const db = redis.createClient();
+const db = redis.createClient({ host: config.redis.host, port: config.redis.port });
 
 function log(/* format, values... */) {
   if (IS_TEST) {
@@ -71,7 +68,7 @@ function mailSummary(mail) {
   return JSON.stringify(summary);
 }
 
-const server = smtp.createServer(HOSTNAME, function (req) {
+const server = smtp.createServer(config.email.host, (req) => {
   const socketPair = socketInfo(req.socket);
   log(`${socketPair}: Handling SMTP request`);
 
@@ -127,7 +124,7 @@ const server = smtp.createServer(HOSTNAME, function (req) {
         // Divert special admin-type addresses into local files
         const specialUser = isSpecialUser(user);
         if (specialUser) {
-          const mailfile = path.join(TMP_DIR, 'restmail-' + specialUser);
+          const mailfile = path.join(config.specialUserDir, 'restmail-' + specialUser);
           log(`${socketPair}: isSpecialUser: Appending to ${mailfile}`);
           fs.appendFileSync(mailfile, JSON.stringify(mail) + '\n');
           return;
@@ -181,12 +178,14 @@ const server = smtp.createServer(HOSTNAME, function (req) {
 
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
-  const port = process.env.PORT || 9025;
+  const port = config.email.port;
   log(`Starting up on port ${port} ${JSON.stringify(config)}`);
   server.listen(port);
 } else {
   module.exports = function(cb) {
-    const port = process.env.PORT || 0;
+    // Intentionally not put in ../lib/config/js.
+    const port = process.env.EMAIL_PORT_OVERRIDE || 0;
+    log(`Starting up on port ${port} ${JSON.stringify(config)}`);
     server.listen(port, function(err) {
       cb(err, server.address().port);
     });
