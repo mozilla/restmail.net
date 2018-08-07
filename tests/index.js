@@ -3,12 +3,12 @@ process.env.NODE_ENV = 'test';
 const should = require('should');
 const http = require('http');
 const net = require('net');
-const webserver = require('../webserver.js');
-const emailserver = require('../emailserver.js');
-const config = require('../config.js');
+const webserver = require('../bin/webserver.js');
+const emailserver = require('../bin/emailserver.js');
+const config = require('../lib/config.js');
 
-var emailPort = -1;
-var webPort = -1;
+let emailPort = -1;
+let webPort = -1;
 
 function requestOptions(method, path) {
   return {
@@ -100,10 +100,10 @@ describe('clearing email', function() {
 
 describe('sending email', function() {
   it('should work', function(done) {
-    var s = net.connect(emailPort, function(err) {
+    const s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = '';
+      let response = '';
       s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
@@ -135,7 +135,7 @@ describe('web apis', function() {
   it('should return mail via complete email address', function(done) {
     http.request(requestOptions('GET', '/mail/me@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -156,10 +156,10 @@ describe('web apis', function() {
 
 describe('sending to multiple recipients', function() {
   it('should work', function(done) {
-    var s = net.connect(emailPort, function(err) {
+    const s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = '';
+      let response = '';
       s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
@@ -193,7 +193,7 @@ describe('web apis', function() {
   it('should return mail for the to: address', function(done) {
     http.request(requestOptions('GET', '/mail/me@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -216,7 +216,7 @@ describe('web apis', function() {
   it('should return mail for the cc: address', function(done) {
     http.request(requestOptions('GET', '/mail/you@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -239,10 +239,10 @@ describe('web apis', function() {
 
 describe('sending two mails on the same TCP connection', function() {
   it('should work', function(done) {
-    var s = net.connect(emailPort, function(err) {
+    const s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = '';
+      let response = '';
       s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
@@ -282,7 +282,7 @@ describe('web apis', function() {
   it('should return new mail for the address from the first delivery', function(done) {
     http.request(requestOptions('GET', '/mail/me@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -303,7 +303,7 @@ describe('web apis', function() {
   it('should return new mail for the address from the second delivery', function(done) {
     http.request(requestOptions('GET', '/mail/you@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -327,10 +327,10 @@ describe('web apis', function() {
 //
 describe('sending email to some well-known admin addresses', function() {
   it('should appear to work', function(done) {
-    var s = net.connect(emailPort, function(err) {
+    const s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = '';
+      let response = '';
       s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
@@ -362,7 +362,7 @@ describe('web apis', function() {
   it('should not though return mail via complete email address', function(done) {
     http.request(requestOptions('GET', '/mail/hostmaster@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -375,10 +375,10 @@ describe('web apis', function() {
 
 describe('sending to multiple "admin" recipients', function() {
   it('should appear to work', function(done) {
-    var s = net.connect(emailPort, function(err) {
+    const s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = '';
+      let response = '';
       s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
@@ -412,7 +412,7 @@ describe('web apis', function() {
   it('should not return "admin" mail for the to: address', function(done) {
     http.request(requestOptions('GET', '/mail/administrator@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -425,7 +425,7 @@ describe('web apis', function() {
   it('should not return "admin" mail for the cc: address', function(done) {
     http.request(requestOptions('GET', '/mail/webmaster@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -438,10 +438,10 @@ describe('web apis', function() {
 
 describe('sending two "admin" mails on the same TCP connection', function() {
   it('should work', function(done) {
-    var s = net.connect(emailPort, function(err) {
+    const s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = '';
+      let response = '';
       s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
@@ -480,7 +480,7 @@ describe('web apis', function() {
   it('should not return new "admin" mail for the address from the first delivery', function(done) {
     http.request(requestOptions('GET', '/mail/admin@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -493,7 +493,7 @@ describe('web apis', function() {
   it('should not return new "admin" mail for the address from the second delivery', function(done) {
     http.request(requestOptions('GET', '/mail/postmaster@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -509,14 +509,14 @@ describe('web apis', function() {
 
 describe('the SMTP RSET and NOOP commands', function() {
   it('should be supported', function(done) {
-    var s = net.connect(emailPort, function(err) {
+    const s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = '';
+      let response = '';
       s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
-        var lines = response.split('\r\n');
+        const lines = response.split('\r\n');
         lines[3].should.equal('250 OK');
         lines[4].should.equal('250');
         lines[11].should.equal('221 Bye!');
@@ -552,7 +552,7 @@ describe('web apis', function() {
   it('should show that mail was not delivered after a reset', function(done) {
     http.request(requestOptions('GET', '/mail/me@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -565,7 +565,7 @@ describe('web apis', function() {
   it('should return new mail delivered after a reset', function(done) {
     http.request(requestOptions('GET', '/mail/you@localhost'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -598,7 +598,7 @@ describe('clearing email', function() {
   it('should cause GET to return zero mails', function(done) {
     http.request(requestOptions('GET', '/mail/me'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);
@@ -616,10 +616,10 @@ describe('sending to multiple recipients', function() {
   });
 
   it('<= config.maximumRcptTo should work', (done) => {
-    var s = net.connect(emailPort, function(err) {
+    const s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = '';
+      let response = '';
       s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
@@ -652,10 +652,10 @@ describe('sending to multiple recipients', function() {
   });
 
   it('> config.maximumRcptTo should be rejected', (done) => {
-    var s = net.connect(emailPort, function(err) {
+    const s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = '';
+      let response = '';
       s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
@@ -691,10 +691,10 @@ describe('sending to multiple recipients', function() {
 
 describe('sending email with an unallowed domain aborts the dialog', function() {
   it('should get error 553 mailbox name not allowed', function(done) {
-    var s = net.connect(emailPort, function(err) {
+    const s = net.connect(emailPort, function(err) {
       should.not.exist(err);
 
-      var response = '';
+      let response = '';
       s.on('data', (chunk) => response += chunk);
 
       s.on('end', function() {
@@ -728,7 +728,7 @@ describe('web apis', function() {
   it('should not return an email stored for an unallowed domain', function(done) {
     http.request(requestOptions('GET', '/mail/someone@badexample.com'), (res) => {
       (res.statusCode).should.equal(200);
-      var data = '';
+      let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', function () {
         data = JSON.parse(data);

@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'test';
 
 const should = require('should');
-const { isPermittedDomain, isSpecialUser } = require('../util');
+const { isPermittedDomain, isSpecialUser } = require('../lib/util');
 
 describe('isPermittedDomain()', () => {
   it('should work', (done) => {

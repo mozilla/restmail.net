@@ -4,10 +4,11 @@ const P = require('bluebird');
 const request = require('request');
 const url = require('url');
 
+const config = require('../lib/config');
 const log = require('./log');
 
 function debug() {
-  if (! process.env.DEBUG) {
+  if (! config.loadtest.debug) {
     return;
   }
 

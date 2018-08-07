@@ -15,6 +15,7 @@ rules:
   no-console: 0
   no-multi-str: 2
   no-useless-escape: 0
+  no-var: 2
   sorting/sort-object-props: [ 2, { "ignoreCase": true, "ignoreMethods": true, "ignoreObjectsWithMethods": true, "ignorePrivate": true } ]
   space-infix-ops: 2
   space-unary-ops: [2, {"nonwords": false, "overrides": {"~": true, "!": true}}]

@@ -6,14 +6,13 @@ const redis = require('redis');
 const http = require('http');
 const path = require('path');
 
-const config = require('./config');
-const { isSpecialUser } = require('./util');
+const config = require('../lib/config');
+const { isSpecialUser } = require('../lib/util');
 
-const HOSTNAME = process.env.EMAIL_HOSTNAME || 'restmail.net';
-const IS_TEST = process.env.NODE_ENV === 'test';
+const IS_TEST = (config.env === 'test');
 
 // create a connection to the redis datastore
-var db = redis.createClient();
+let db = redis.createClient({ host: config.redis.host, port: config.redis.port });
 
 db.on('error', function (err) {
   db = null;
@@ -27,23 +26,24 @@ db.on('error', function (err) {
   }
 });
 
-var app = express();
+const app = express();
 
 // log to console when not testing
 if (! IS_TEST) {
   app.use(morgan('combined'));
 }
 
+const readme = path.resolve(__dirname, '..', 'README.md');
 app.get('/README', function(req, res) {
   res.set('Content-Type', 'text/plain');
-  res.sendFile(path.join(__dirname, 'README.md'));
+  res.sendFile(path.join(readme));
 });
 
 // automatically make user part only input into email with
 // default hostname.
 function canonicalize(email) {
   if (email.indexOf('@') === -1) {
-    email = email + '@' + HOSTNAME;
+    email = email + '@' + config.email.host;
   }
   return email;
 }
@@ -68,7 +68,7 @@ app.get('/mail/:user', function(req, res) {
       console.log(new Date().toISOString() + ': ERROR', err);
       res.status(500).end();
     } else {
-      var arr = [];
+      const arr = [];
       replies.forEach(function (r) {
         try {
           arr.push(JSON.parse(r));
@@ -92,18 +92,19 @@ app.delete('/mail/:user', function(req, res) {
   });
 });
 
-app.use(express.static(__dirname + '/website'));
+const website = path.resolve(__dirname, '..', 'website');
+app.use(express.static(website));
 
 // handle starting from the command line or the test harness
 if (process.argv[1] === __filename) {
-  var port = process.env['PORT'] || 8080;
+  const port = config.webPort;
   console.log(`[${new Date().toISOString()}]: Starting up on port ${port} ${JSON.stringify(config)}`);
   app.listen(port);
 } else {
   module.exports = function(cb) {
-    var server = http.createServer(app);
+    const server = http.createServer(app);
     server.listen(function() {
-      var port = server.address().port;
+      const port = server.address().port;
       console.log(`[${new Date().toISOString()}]: Starting up on port ${port} ${JSON.stringify(config)}`);
       cb(null, port);
     });
