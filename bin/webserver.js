@@ -28,6 +28,13 @@ db.on('error', function (err) {
 
 const app = express();
 
+app.use(function (req, res, next) {
+  const stsHeaderName = 'strict-transport-security';
+  const stsHeaderValue = 'max-age=' + config.stsMaxAge;
+  res.setHeader(stsHeaderName, stsHeaderValue);
+  next();
+});
+
 // log to console when not testing
 if (! IS_TEST) {
   app.use(morgan('combined'));

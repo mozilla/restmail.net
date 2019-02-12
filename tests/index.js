@@ -53,6 +53,20 @@ describe('loading main page content path /README', function() {
   });
 });
 
+describe('responses must return a "strict-transport-security" header, if enabled', function() {
+  const stsHeaderName = 'strict-transport-security';
+  const stsHeaderValue = 'max-age=' + config.stsMaxAge;
+  it('has STS header', function(done) {
+    http.request(requestOptions('GET', '/README'), (res) => {
+      (res.statusCode).should.equal(200);
+      if (config.enableSTS) {
+        (res.headers[stsHeaderName]).should.equal(stsHeaderValue);
+      }
+      done();
+    }).end();
+  });
+});
+
 describe('clearing email', function() {
   it('should work', function(done) {
     http.request(requestOptions('DELETE', '/mail/me@localhost'), (res) => {
