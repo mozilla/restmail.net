@@ -29,9 +29,11 @@ db.on('error', function (err) {
 const app = express();
 
 app.use(function (req, res, next) {
-  const stsHeaderName = 'strict-transport-security';
-  const stsHeaderValue = 'max-age=' + config.stsMaxAge;
-  res.setHeader(stsHeaderName, stsHeaderValue);
+  if (config.enableSTS) {
+    const stsHeaderName = 'strict-transport-security';
+    const stsHeaderValue = 'max-age=' + config.stsMaxAge;
+    res.setHeader(stsHeaderName, stsHeaderValue);
+  }
   next();
 });
 

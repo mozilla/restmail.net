@@ -56,11 +56,13 @@ describe('loading main page content path /README', function() {
 describe('responses must return a "strict-transport-security" header, if enabled', function() {
   const stsHeaderName = 'strict-transport-security';
   const stsHeaderValue = 'max-age=' + config.stsMaxAge;
-  it('has STS header', function(done) {
+  it('has STS header if $ENABLE_STS is set, otherwise not', function(done) {
     http.request(requestOptions('GET', '/README'), (res) => {
       (res.statusCode).should.equal(200);
       if (config.enableSTS) {
         (res.headers[stsHeaderName]).should.equal(stsHeaderValue);
+      } else {
+        res.headers.should.not.have.property(stsHeaderName);
       }
       done();
     }).end();
