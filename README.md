@@ -49,7 +49,7 @@ fields stripped out):
       {
         "headers": {
           "date": "Fri, 11 May 2012 14:44:37 -0600",
-          "mime-version": "1.0 (Apple Message framework v1257)",
+          "mime-version": "1.0 (Apple Message framework v1257)"
         },
         "from": [ {
           "address": "lloyd@example.com",
@@ -64,7 +64,7 @@ fields stripped out):
       }, {
         "headers": {
           "date": "Fri, 11 May 2012 14:44:52 -0600",
-          "mime-version": "1.0 (Apple Message framework v1257)",
+          "mime-version": "1.0 (Apple Message framework v1257)"
         },
         "from": [ {
           "address": "lloyd@example.com",
