@@ -1,6 +1,6 @@
 # Email addresses for testing
 
-[![Build Status](https://secure.travis-ci.org/mozilla/restmail.net.svg)](http://travis-ci.org/mozilla/restmail.net)
+[![Build Status](https://circleci.com/gh/mozilla/restmail.net.svg?style=svg)](https://app.circleci.com/pipelines/github/mozilla/restmail.net)
 
 Have you ever wanted to write an automated test of a service that
 sends email?  If you have, you might have wanted an email address that
