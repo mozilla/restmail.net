@@ -16,7 +16,7 @@
     "hiredis": "0.5.0"
   },
   "devDependencies": {
-    "commander": "2.19.0",
+    "commander": "10.0.0",
     "eslint": "5.13.0",
     "eslint-plugin-fxa": "git://github.com/mozilla/eslint-plugin-fxa.git#41504c9dd30e8b52900c15b524946aa0428aef95",
     "eslint-plugin-sorting": "git://github.com/shane-tomlinson/eslint-plugin-sorting.git#bcacb99d",
