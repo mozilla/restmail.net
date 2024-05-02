@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bluebird": "3.5.3",
+    "bluebird": "3.7.2",
     "convict": "6.2.4",
     "express": "4.19.2",
     "mailparser": "0.6.2",
