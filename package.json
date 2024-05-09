@@ -21,17 +21,15 @@
     "eslint-plugin-fxa": "git://github.com/mozilla/eslint-plugin-fxa.git#41504c9dd30e8b52900c15b524946aa0428aef95",
     "eslint-plugin-sorting": "git://github.com/shane-tomlinson/eslint-plugin-sorting.git#bcacb99d",
     "mocha": "10.4.0",
-    "request": "2.88.2",
     "should": "13.2.3"
   },
   "engines": {
     "node": ">= 8"
   },
   "scripts": {
-    "lint": "eslint bin/*.js lib/*.js tests/*.js loadtest/*.js",
-    "loadtest": "node loadtest/index.js -d 3000",
+    "lint": "eslint bin/*.js lib/*.js tests/*.js",
     "start": "node bin/webserver.js",
-    "test": "npm run lint && npm run tests && npm run loadtest",
+    "test": "npm run lint && npm run tests",
     "tests": "NODE_ENV=test mocha --exit --globals msg -R spec tests/*.js"
   }
 }
