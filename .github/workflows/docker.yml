@@ -39,8 +39,8 @@ jobs:
       id-token: write
     env:
       GAR_LOCATION: us
-      GAR_REPOSITORY: fxa-prod
-      GCP_PROJECT_ID: moz-fx-fxa-prod
+      GAR_REPOSITORY: fxa-testing-prod
+      GCP_PROJECT_ID: moz-fx-fxa-testing-prod
       IMAGE: restmail 
       RUN_ID: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       TAG: ${{ needs.tag.outputs.TAG }}
@@ -52,14 +52,6 @@ jobs:
           ref: ${{ env.TAG }}
 
       - uses: actions/setup-node@v4
-        with:
-          cache: yarn
-
-      - run: ./_scripts/l10n/clone.sh
-
-      - run: ./.circleci/base-install.sh
-
-      - run: ./_scripts/create-version-json.sh
 
       - uses: docker/setup-buildx-action@v3
 
