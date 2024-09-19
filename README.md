@@ -90,16 +90,11 @@ fields stripped out):
 ]
 ```
 
-## restmail on your domain (deprecated; the public restmail.net is now resricted).
+## Development
 
-You can use restmail from custom domains:  Just set restmail as your mail exchanger:
+### Prerequisites
+You have redis running on port 6379.  There are configuration variables you can adjust in `lib/config.js`.
 
-    $ dig -t <my domain>
-    <my domain>            900     IN      MX      20 restmail.net.
-
-And fetch mail with the full email address:
-
-    GET /mail/<user>@<my domain>
-
-done!
-
+0. `npm install`
+0. `npm run tests`
+0. `npm start`

@@ -48,6 +48,10 @@ app.get('/README', function(req, res) {
   res.sendFile(path.join(readme));
 });
 
+app.get('/__lbheartbeat__', function(req, res) {
+  res.status(200).send('OK');
+});
+
 // automatically make user part only input into email with
 // default hostname.
 function canonicalize(email) {
