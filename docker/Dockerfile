@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     jq \
     curl \
+    netcat \
     && rm -rf /var/lib/apt/lists/*
 
 # Utilities for fxa services
