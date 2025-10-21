@@ -18,10 +18,12 @@ jobs:
       TAG: ${{ steps.determine.outputs.tag }}
     steps:
       - id: determine
+        env:
+          GIT_TAG: ${{ github.event.inputs.git_tag }}
         run: |
           # workflow_dispatch
-          if [[ "${{ github.event.inputs.git_tag }}" != "" ]]; then
-            echo "tag=${{ github.event.inputs.git_tag }}" >> $GITHUB_OUTPUT
+          if [[ "$GIT_TAG" != "" ]]; then
+            echo "tag=$GIT_TAG" >> $GITHUB_OUTPUT
           # push
           elif [[ "${{ github.ref }}" != "" ]]; then
             echo "tag=$(cut -d \/ -f3 <(echo '${{ github.ref }}'))" >> $GITHUB_OUTPUT
