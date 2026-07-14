@@ -52,6 +52,21 @@ app.get('/__lbheartbeat__', function(req, res) {
   res.status(200).send('OK');
 });
 
+// __heartbeat__ checks that our backing service (redis) is reachable.
+app.get('/__heartbeat__', function(req, res) {
+  if (! db) {
+    return res.status(IS_TEST ? 200 : 500).json({ redis: IS_TEST });
+  }
+
+  db.ping(function(err) {
+    if (err) {
+      console.log(new Date().toISOString() + ': ERROR heartbeat redis ping failed: ' + err);
+      return res.status(500).json({ redis: false });
+    }
+    res.status(200).json({ redis: true });
+  });
+});
+
 // automatically make user part only input into email with
 // default hostname.
 function canonicalize(email) {

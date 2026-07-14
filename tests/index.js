@@ -35,9 +35,18 @@ describe('the test servers', function() {
   });
 });
 
-describe('loading heartbeat', function() {
+describe('loading lbheartbeat', function() {
   it('should work', function(done) {
     http.request(requestOptions('GET', '/__lbheartbeat__'), (res) => {
+      (res.statusCode).should.equal(200);
+      done();
+    }).end();
+  });
+});
+
+describe('loading heartbeat', function() {
+  it('should work', function(done) {
+    http.request(requestOptions('GET', '/__heartbeat__'), (res) => {
       (res.statusCode).should.equal(200);
       done();
     }).end();
